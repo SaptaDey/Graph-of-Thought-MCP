@@ -1,0 +1,26 @@
+{
+  "server": {
+    "host": "0.0.0.0",
+    "port": 8082,
+    "debug": true
+  },
+  "claude": {
+    "api_endpoint": "http://localhost:8082/api/claude",
+    "model": "claude-3-7-sonnet-20250219"
+  },
+  "asr_got": {
+    "default_parameters": {
+      "evidence_max_iterations": 5,
+      "layers": {
+        "immunology": {"description": "Immunology perspective layer"},
+        "molecular_biology": {"description": "Molecular biology perspective layer"},
+        "machine_learning": {"description": "Machine learning perspective layer"},
+        "clinical": {"description": "Clinical perspective layer"}
+      }
+    }
+  },
+  "logging": {
+    "level": "INFO",
+    "file": "logs/asr_got_mcp.log"
+  }
+}
