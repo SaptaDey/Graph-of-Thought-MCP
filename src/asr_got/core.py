@@ -105,6 +105,7 @@ class ASRGoTProcessor:
         Get the current state of the graph for a session.
         """
         if session_id not in self.session_graphs:
+            logger.error(f"Session ID {session_id} not found")
             raise ValueError(f"Session {session_id} not found")
         
         graph = self.session_graphs[session_id]

@@ -37,5 +37,8 @@ ENV PYTHONUNBUFFERED=1 \
     MCP_SERVER_PORT=8082 \
     LOG_LEVEL=INFO
 
+# Install security analysis tools
+RUN pip install bandit
+
 # Default command: run the FastAPI server
-CMD ["sh", "-c", "cd src && python server.py"]
+CMD ["sh", "-c", "bandit -r /app/src && cd src && python server.py"]

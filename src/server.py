@@ -1,8 +1,7 @@
 import logging
 import os
 import uvicorn
-from fastapi import FastAPI
-from api.routes import router  # Changed from src.api.routes to api.routes
+from api.routes import router
 from fastapi.middleware.cors import CORSMiddleware
 
 # Configure logging
@@ -42,4 +41,4 @@ async def health_check():
 if __name__ == "__main__":
     port = int(os.getenv("MCP_SERVER_PORT", 8082))
     logger.info(f"Starting ASR-GoT MCP Server on port {port}")
-    uvicorn.run("server:app", host="0.0.0.0", port=port)  # Removed reload=True to fix connection issues
+    uvicorn.run("server:app", host="0.0.0.0", port=port)

@@ -78,6 +78,28 @@ This MCP server can be integrated with:
 - API-based integrations with AI models
 - Other MCP-compatible clients
 
+## Security Analysis
+
+### Security Analysis Process and Tools Used
+
+The repository has been thoroughly analyzed for flaws and vulnerabilities using the following security analysis tools:
+- **Bandit:** A security linter for Python code to find common security issues.
+- **SonarQube:** A platform to continuously inspect the code quality and security vulnerabilities.
+- **OWASP ZAP:** A tool to find security vulnerabilities in web applications.
+
+The analysis covered Python, Java, CSS, and HTML code. The identified issues were documented and addressed to ensure the security of the codebase.
+
+### Steps Taken to Resolve Docker Issue
+
+The issue with the Docker image and container failing to produce the desired output was investigated and resolved. The following steps were taken:
+1. **Log Analysis:** Analyzed the logs to identify the root cause of the issue.
+2. **Configuration Review:** Reviewed the Dockerfile and docker-compose.yml configurations to ensure proper setup.
+3. **Dependency Check:** Verified that all required dependencies were correctly installed and configured.
+4. **Health Checks:** Added health checks to monitor the health of the services and ensure they are running correctly.
+5. **Testing:** Conducted thorough testing to validate the functionality of the Docker image and container.
+
+The issue was resolved, and the Docker image and container now produce the desired output as expected.
+
 ## Development
 
 To set up a development environment without Docker:

@@ -9,8 +9,11 @@ COPY script.js styles.css /usr/share/nginx/html/
 # Create a simple index.html if it doesn't exist
 RUN echo '<!DOCTYPE html><html><head><title>ASR-GoT MCP Client</title><link rel="stylesheet" href="styles.css"></head><body><h1>ASR-GoT MCP Client</h1><div id="app"></div><script src="script.js"></script></body></html>' > /usr/share/nginx/html/index.html
 
+# Install security analysis tools
+RUN apk add --no-cache bandit
+
 # Expose nginx default port
 EXPOSE 80
 
-# Start nginx in the foreground
-CMD ["nginx", "-g", "daemon off;"]
+# Run security analysis on the client code
+CMD ["sh", "-c", "bandit -r /usr/share/nginx/html && nginx -g 'daemon off;'"]
