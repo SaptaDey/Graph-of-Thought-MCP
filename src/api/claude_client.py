@@ -2,6 +2,8 @@ import logging
 import httpx
 import os
 import json
+import subprocess
+import sys
 from typing import Dict, Any, Optional
 
 logger = logging.getLogger("asr-got-claude-client")
@@ -16,11 +18,18 @@ class ClaudeClient:
         Initialize the Claude client with configurations.
         """
         self.config = self._load_config(config_path)
+        self.use_desktop_app = self.config["claude"].get("use_desktop_app", True)
+        self.desktop_app_path = self.config["claude"].get("desktop_app_path", "")
+        
+        # Fallback to API if desktop app is not enabled
         self.base_url = self.config["claude"]["api_endpoint"]
         self.api_key = self.config["claude"]["api_key"] or os.environ.get("CLAUDE_API_KEY", "")
         self.model = self.config["claude"]["model"]
         
-        logger.info(f"Claude client initialized for model: {self.model}")
+        if self.use_desktop_app:
+            logger.info(f"Claude client initialized to use desktop application")
+        else:
+            logger.info(f"Claude client initialized for API model: {self.model}")
     
     def _load_config(self, config_path: str) -> Dict[str, Any]:
         """
@@ -42,13 +51,82 @@ class ClaudeClient:
                 "claude": {
                     "api_endpoint": "http://localhost:8082/api/claude",
                     "api_key": "",
-                    "model": "claude-3-7-sonnet-20250219"
+                    "model": "claude-3-7-sonnet-20250219",
+                    "use_desktop_app": True,
+                    "desktop_app_path": ""
                 }
             }
     
     async def query_claude(self, message: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """
         Send a query to Claude and get a response.
+        """
+        if self.use_desktop_app:
+            return await self._query_claude_desktop(message, context)
+        else:
+            return await self._query_claude_api(message, context)
+    
+    async def _query_claude_desktop(self, message: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """
+        Send a query to Claude desktop application.
+        
+        This implementation creates a temporary file with the query and opens it with the 
+        Claude desktop application. The user would then interact with Claude directly.
+        """
+        try:
+            # Create formatted prompt
+            prompt = message
+            if context:
+                prompt = f"{prompt}\n\nContext: {json.dumps(context, indent=2)}"
+            
+            # Create a temporary HTML file to open Claude with the prompt
+            temp_file_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 
+                                         "temp_claude_prompt.html")
+            
+            with open(temp_file_path, "w", encoding="utf-8") as f:
+                f.write(f"""
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>ASR-GoT Query for Claude</title>
+                    <style>
+                        body {{ font-family: Arial, sans-serif; margin: 20px; }}
+                        .prompt {{ white-space: pre-wrap; background: #f5f5f5; padding: 15px; border-radius: 5px; }}
+                        .instructions {{ margin-bottom: 20px; color: #555; }}
+                    </style>
+                </head>
+                <body>
+                    <h1>ASR-GoT Query for Claude</h1>
+                    <div class="instructions">
+                        <p>Copy the following prompt into your Claude desktop application:</p>
+                    </div>
+                    <div class="prompt">{prompt}</div>
+                </body>
+                </html>
+                """)
+            
+            # Open the file in the default browser
+            if sys.platform == "win32":
+                os.startfile(temp_file_path)
+            elif sys.platform == "darwin":
+                subprocess.run(["open", temp_file_path], check=True)
+            else:
+                subprocess.run(["xdg-open", temp_file_path], check=True)
+                
+            # Return a message indicating the query was opened in Claude desktop
+            return {
+                "success": True,
+                "message": "Query has been opened for the Claude desktop application. Please check your browser.",
+                "desktop_mode": True
+            }
+            
+        except Exception as e:
+            logger.error(f"Error using Claude desktop: {str(e)}")
+            return {"error": str(e), "desktop_mode": True}
+    
+    async def _query_claude_api(self, message: str, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+        """
+        Send a query to Claude API and get a response.
         """
         headers = {
             "Content-Type": "application/json",
@@ -80,7 +158,7 @@ class ClaudeClient:
                 response.raise_for_status()
                 return response.json()
         except Exception as e:
-            logger.error(f"Error querying Claude: {str(e)}")
+            logger.error(f"Error querying Claude API: {str(e)}")
             return {"error": str(e)}
     
     async def format_asr_got_query(self, query: str, graph_state: Dict[str, Any] = None) -> str:

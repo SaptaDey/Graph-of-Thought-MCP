@@ -63,6 +63,13 @@ document.addEventListener('DOMContentLoaded', function() {
             
             const data = await response.json();
             
+            // Check if desktop mode is being used
+            if (data.desktop_mode) {
+                // Show special UI for desktop mode
+                displayDesktopModeMessage(data.message);
+                return;
+            }
+            
             // Process and display results
             displayResults(data);
             
@@ -71,6 +78,31 @@ document.addEventListener('DOMContentLoaded', function() {
             loading.classList.add('hidden');
             alert('Error processing your query. Please try again.');
         }
+    }
+    
+    // Display desktop mode message
+    function displayDesktopModeMessage(message) {
+        // Hide loading, show results
+        loading.classList.add('hidden');
+        resultsContainer.classList.remove('hidden');
+        
+        // Display message about using the desktop app
+        claudeContent.innerHTML = `
+            <div class="desktop-mode-message">
+                <h3>Using Claude Desktop Application</h3>
+                <p>${message || 'Your query has been sent to the Claude desktop application.'}</p>
+                <p>Please check your browser for a new window with the prompt. Copy this prompt into your Claude desktop application to continue.</p>
+                <p>After receiving Claude's response, you can paste it back into the ASR-GoT application for further processing.</p>
+                <div class="desktop-app-instructions">
+                    <h4>For a better experience:</h4>
+                    <p>Visit <a href="/api/v1/claude/desktop-prompt" target="_blank">Claude Desktop Integration Page</a> for a dedicated interface designed for working with the Claude desktop application.</p>
+                </div>
+            </div>
+        `;
+        
+        // Show placeholder content for other tabs
+        traceContent.innerHTML = '<p>No reasoning trace available when using desktop mode. Process Claude\'s response through the ASR-GoT application to generate a reasoning trace.</p>';
+        graphContainer.innerHTML = '<p>No graph data available when using desktop mode. Process Claude\'s response through the ASR-GoT application to generate a graph visualization.</p>';
     }
     
     // Display results function

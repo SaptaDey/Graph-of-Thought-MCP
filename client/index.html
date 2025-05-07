@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASR-GoT Claude Integration</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>ASR-GoT Integration with Claude</h1>
+        
+        <div class="query-section">
+            <h2>Research Query</h2>
+            <textarea id="query-input" placeholder="Enter your research query here..."></textarea>
+            <button id="submit-btn">Process with ASR-GoT</button>
+        </div>
+        
+        <div class="results-section">
+            <h2>Results</h2>
+            <div id="loading" class="hidden">Processing...</div>
+            
+            <div id="results-container" class="hidden">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="claude-response">Claude Response</button>
+                    <button class="tab-btn" data-tab="reasoning-trace">Reasoning Trace</button>
+                    <button class="tab-btn" data-tab="graph-viz">Graph Visualization</button>
+                </div>
+                
+                <div id="claude-response" class="tab-content active">
+                    <div id="claude-content"></div>
+                </div>
+                
+                <div id="reasoning-trace" class="tab-content">
+                    <div id="trace-content"></div>
+                </div>
+                
+                <div id="graph-viz" class="tab-content">
+                    <div id="graph-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

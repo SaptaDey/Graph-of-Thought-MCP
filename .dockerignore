@@ -1,0 +1,70 @@
+# Language-specific ignores
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.coverage
+
+# Node.js / JavaScript
+node_modules/
+npm-debug.log
+yarn-debug.log
+
+# Development artifacts
+.idea/
+.vscode/
+*.swp
+*.swo
+dist/
+build/
+out/
+debug/
+*.log
+
+# Test files and directories
+test/
+tests/
+
+# Version control
+.git/
+.gitignore
+.svn/
+.hg/
+
+# Environment and secrets
+.env*
+*.env
+*.pem
+*.key
+*.crt
+config.local.*
+*.local.yml
+
+# Project-specific patterns
+docs/
+*.md
+README*
+Dockerfile*
+docker-compose*
+tmp/
+temp/
+*.tmp
+.local/
+local/
+
+# Other common patterns
+logs/
+
+# Exclude empty config directory (if needed)
+!src/config/
+
+# Exclude client build artifacts (if any)
+client/dist/
+client/build/
+
+# Exclude editor swap files
+*~
+
+# Exclude OS generated files
+.DS_Store
+Thumbs.db

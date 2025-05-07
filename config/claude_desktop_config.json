@@ -1,0 +1,51 @@
+{
+    "name": "ASR-GoT MCP Integration",
+    "description": "Integrates Claude with Advanced Scientific Reasoning Graph-of-Thoughts capabilities",
+    "version": "1.0.0",
+    "type": "mcp",
+    "icon": "🧠",
+    "connection": {
+      "endpoint": "http://localhost:8082/mcp",
+      "method": "POST",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer $api_key",
+        "X-Client-ID": "claude-desktop",
+        "X-Client-Version": "1.0.0"
+      },
+      "requestFormat": {
+        "jsonrpc": "2.0",
+        "method": "asr_got.query",
+        "id": "$request_id",
+        "params": {
+          "context": {
+            "query": "$message",
+            "conversation_id": "$conversation_id",
+            "history": "$history"
+          },
+          "options": {
+            "include_reasoning_trace": true,
+            "include_graph_state": true,
+            "max_nodes": 20,
+            "confidence_threshold": 0.7
+          }
+        }
+      },
+      "responseMapping": {
+        "message": "result.response",
+        "reasoning_trace": "result.reasoningTrace",
+        "confidence": "result.confidence",
+        "graph_state": "result.graphState",
+        "metadata": "result.metadata",
+        "elapsed_time": "result.elapsedTime"
+      }
+    },
+    "capabilities": {
+      "messageParsing": true,
+      "contextTracking": true,
+      "stateManagement": true
+    },
+    "defaults": {
+      "model": "claude-3-7-sonnet-20250219"
+    }
+  }

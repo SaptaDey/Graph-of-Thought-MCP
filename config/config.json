@@ -2,11 +2,14 @@
   "server": {
     "host": "0.0.0.0",
     "port": 8082,
-    "debug": true
+    "debug": false
   },
   "claude": {
-    "api_endpoint": "http://localhost:8082/api/claude",
-    "model": "claude-3-7-sonnet-20250219"
+    "api_endpoint": "http://localhost:3000/api/claude",
+    "api_key": "claude.api_key",
+    "model": "claude-3-7-sonnet-20250219",
+    "use_desktop_app": true,
+    "desktop_app_path": ""
   },
   "asr_got": {
     "default_parameters": {
