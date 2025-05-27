@@ -1,1 +1,520 @@
 2025-05-07T16:42:31.397Z - ASR-GoT MCP Server started
+2025-05-26 23:26:05,734 - asr-got-mcp-server - INFO - ASR-GoT MCP Server starting...
+2025-05-26 23:26:05,735 - asr-got-core - INFO - ASR-GoT Processor initialized with 8 stages
+2025-05-26 23:26:05,735 - asr-got-mcp-server - INFO - ASR-GoT MCP Server started
+2025-05-26 23:26:05,735 - asr-got-mcp-server - INFO - No more messages, exiting
+2025-05-26 23:26:16,353 - asr-got-mcp-server - INFO - ASR-GoT MCP Server starting...
+2025-05-26 23:26:16,353 - asr-got-core - INFO - ASR-GoT Processor initialized with 8 stages
+2025-05-26 23:26:16,353 - asr-got-mcp-server - INFO - ASR-GoT MCP Server started
+2025-05-26 23:26:16,353 - asr-got-mcp-server - INFO - Received message: initialize
+2025-05-26 23:26:16,353 - asr-got-mcp-server - INFO - Received message with method: initialize, id: 1
+2025-05-26 23:26:16,353 - asr-got-mcp-server - INFO - Handling initialize request: {'protocolVersion': '2024-11-05'}
+2025-05-26 23:26:16,353 - asr-got-mcp-server - INFO - Returning initialize response
+2025-05-26 23:26:16,353 - asr-got-mcp-server - INFO - Sent response for method: initialize
+2025-05-26 23:26:16,353 - asr-got-mcp-server - INFO - No more messages, exiting
+2025-05-26 23:28:29,526 - asr-got-mcp-server - INFO - ASR-GoT MCP Server starting...
+2025-05-26 23:28:29,526 - asr-got-core - INFO - ASR-GoT Processor initialized with 8 stages
+2025-05-26 23:28:29,526 - asr-got-mcp-server - INFO - ASR-GoT MCP Server started
+2025-05-26 23:30:13,851 - asr-got-mcp-server - INFO - ASR-GoT MCP Server starting...
+2025-05-26 23:30:13,851 - asr-got-core - INFO - ASR-GoT Processor initialized with 8 stages
+2025-05-26 23:30:13,851 - asr-got-mcp-server - INFO - ASR-GoT MCP Server started
+2025-05-26 23:37:01,251 - asr-got-mcp-server - INFO - ASR-GoT MCP Server started
+2025-05-26 23:37:01,251 - asr-got-mcp-server - INFO - Received message: initialize
+2025-05-26 23:37:01,251 - asr-got-mcp-server - INFO - Received message with method: initialize, id: 1
+2025-05-26 23:37:01,251 - asr-got-mcp-server - INFO - Handling initialize request: {'protocolVersion': '2024-11-05'}
+2025-05-26 23:37:01,251 - asr-got-mcp-server - INFO - Returning initialize response
+2025-05-26 23:37:01,251 - asr-got-mcp-server - INFO - Sent response for method: unknown
+2025-05-26 23:37:01,251 - asr-got-mcp-server - INFO - No more messages, exiting
+2025-05-26 23:37:14,618 - asr-got-mcp-server - INFO - ASR-GoT MCP Server started
+2025-05-26 23:37:14,619 - asr-got-mcp-server - ERROR - Failed to parse JSON message: Extra data: line 2 column 1 (char 98)
+2025-05-26 23:37:14,619 - asr-got-mcp-server - INFO - No more messages, exiting
+2025-05-26 23:37:53,163 - asr-got-mcp-server - INFO - ASR-GoT MCP Server started
+2025-05-26 23:37:53,164 - asr-got-mcp-server - INFO - Received message: initialize
+2025-05-26 23:37:53,164 - asr-got-mcp-server - INFO - Received message with method: initialize, id: 1
+2025-05-26 23:37:53,164 - asr-got-mcp-server - INFO - Handling initialize request: {'protocolVersion': '2024-11-05', 'capabilities': {}, 'clientInfo': {'name': 'test-client', 'version': '1.0.0'}}
+2025-05-26 23:37:53,164 - asr-got-mcp-server - INFO - Returning initialize response
+2025-05-26 23:37:53,164 - asr-got-mcp-server - INFO - Sent response for method: unknown
+2025-05-26 23:37:53,164 - asr-got-mcp-server - INFO - Received message: tools/list
+2025-05-26 23:37:53,164 - asr-got-mcp-server - INFO - Received message with method: tools/list, id: 2
+2025-05-26 23:37:53,164 - asr-got-mcp-server - INFO - Handling tools/list request
+2025-05-26 23:37:53,164 - asr-got-mcp-server - INFO - Sent response for method: unknown
+2025-05-26 23:37:53,165 - asr-got-mcp-server - INFO - Received message: tools/call
+2025-05-26 23:37:53,165 - asr-got-mcp-server - INFO - Received message with method: tools/call, id: 3
+2025-05-26 23:37:53,165 - asr-got-mcp-server - INFO - Handling tools/call request for tool: asr_got_query
+2025-05-26 23:37:53,165 - asr-got-mcp-server - INFO - Executing ASR-GoT query: What is 2+2?...
+2025-05-26 23:37:53,165 - asr-got-mcp-server - INFO - Initializing ASR-GoT processor...
+2025-05-26 23:37:53,165 - asr-got-core - INFO - ASR-GoT Processor initialized with 8 stages
+2025-05-26 23:37:53,165 - asr-got-mcp-server - INFO - ASR-GoT processor initialized
+2025-05-26 23:37:53,165 - asr-got-core - INFO - Processing query: What is 2+2?...
+2025-05-26 23:37:53,165 - asr-got-graph - INFO - ASR-GoT Graph initialized
+2025-05-26 23:37:53,165 - asr-got-core - INFO - Executing Stage 1: InitializationStage
+2025-05-26 23:37:53,165 - asr-got-stage1 - INFO - Executing Initialization Stage
+2025-05-26 23:37:53,165 - asr-got-stage1 - INFO - Initialization complete: Root node created with ID n0
+2025-05-26 23:37:53,165 - asr-got-core - INFO - Executing Stage 2: DecompositionStage
+2025-05-26 23:37:53,165 - asr-got-stage2 - INFO - Executing Decomposition Stage
+2025-05-26 23:37:53,165 - asr-got-stage2 - INFO - Decomposition complete: Created 7 dimension nodes
+2025-05-26 23:37:53,165 - asr-got-core - INFO - Executing Stage 3: HypothesisStage
+2025-05-26 23:37:53,165 - asr-got-stage3 - INFO - Executing Hypothesis Generation Stage
+2025-05-26 23:37:53,165 - asr-got-stage3 - INFO - Hypothesis generation complete: Created 28 hypotheses
+2025-05-26 23:37:53,165 - asr-got-core - INFO - Executing Stage 4: EvidenceStage
+2025-05-26 23:37:53,165 - asr-got-stage4 - INFO - Executing Evidence Integration Stage
+2025-05-26 23:37:53,165 - asr-got-stage4 - INFO - Evidence integration iteration 1/5
+2025-05-26 23:37:53,165 - asr-got-mcp-server - ERROR - Error processing ASR-GoT query: 'str' object has no attribute 'get'
+2025-05-26 23:37:53,166 - asr-got-mcp-server - ERROR - Traceback (most recent call last):
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/mcp-wrapper/mcp_server.py", line 267, in _execute_asr_got_query
+    result = processor.process_query(
+        query=query,
+        context=context,
+        parameters=options
+    )
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/src/asr_got/core.py", line 71, in process_query
+    result = stage.execute(graph, stage_context)
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/src/asr_got/stages/stage_4_evidence.py", line 58, in execute
+    evidence_result = self._execute_plan(graph, h_star, parameters)
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/src/asr_got/stages/stage_4_evidence.py", line 206, in _execute_plan
+    plan_type = plan.get("type", "search")
+                ^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'
+
+2025-05-26 23:37:53,166 - asr-got-mcp-server - INFO - Sent response for method: unknown
+2025-05-26 23:37:55,170 - asr-got-mcp-server - INFO - Received message: shutdown
+2025-05-26 23:37:55,171 - asr-got-mcp-server - INFO - Received message with method: shutdown, id: 4
+2025-05-26 23:37:55,171 - asr-got-mcp-server - INFO - Handling shutdown request
+2025-05-26 23:37:55,171 - asr-got-mcp-server - ERROR - Error writing message: 'NoneType' object has no attribute 'get'
+2025-05-26 23:37:55,171 - asr-got-mcp-server - INFO - Shutdown requested, exiting
+2025-05-26 23:38:56,561 - asr-got-mcp-server - INFO - ASR-GoT MCP Server started
+2025-05-26 23:38:56,561 - asr-got-mcp-server - INFO - Received message: initialize
+2025-05-26 23:38:56,561 - asr-got-mcp-server - INFO - Received message with method: initialize, id: 1
+2025-05-26 23:38:56,561 - asr-got-mcp-server - INFO - Handling initialize request: {'protocolVersion': '2024-11-05', 'capabilities': {}, 'clientInfo': {'name': 'test-client', 'version': '1.0.0'}}
+2025-05-26 23:38:56,561 - asr-got-mcp-server - INFO - Returning initialize response
+2025-05-26 23:38:56,561 - asr-got-mcp-server - INFO - Sent response for method: unknown
+2025-05-26 23:38:56,562 - asr-got-mcp-server - INFO - Received message: tools/list
+2025-05-26 23:38:56,562 - asr-got-mcp-server - INFO - Received message with method: tools/list, id: 2
+2025-05-26 23:38:56,562 - asr-got-mcp-server - INFO - Handling tools/list request
+2025-05-26 23:38:56,562 - asr-got-mcp-server - INFO - Sent response for method: unknown
+2025-05-26 23:38:56,562 - asr-got-mcp-server - INFO - Received message: tools/call
+2025-05-26 23:38:56,562 - asr-got-mcp-server - INFO - Received message with method: tools/call, id: 3
+2025-05-26 23:38:56,562 - asr-got-mcp-server - INFO - Handling tools/call request for tool: asr_got_query
+2025-05-26 23:38:56,562 - asr-got-mcp-server - INFO - Executing ASR-GoT query: What is 2+2?...
+2025-05-26 23:38:56,562 - asr-got-mcp-server - INFO - Initializing ASR-GoT processor...
+2025-05-26 23:38:56,562 - asr-got-core - INFO - ASR-GoT Processor initialized with 8 stages
+2025-05-26 23:38:56,562 - asr-got-mcp-server - INFO - ASR-GoT processor initialized
+2025-05-26 23:38:56,562 - asr-got-core - INFO - Processing query: What is 2+2?...
+2025-05-26 23:38:56,562 - asr-got-graph - INFO - ASR-GoT Graph initialized
+2025-05-26 23:38:56,562 - asr-got-core - INFO - Executing Stage 1: InitializationStage
+2025-05-26 23:38:56,562 - asr-got-stage1 - INFO - Executing Initialization Stage
+2025-05-26 23:38:56,562 - asr-got-stage1 - INFO - Initialization complete: Root node created with ID n0
+2025-05-26 23:38:56,563 - asr-got-core - INFO - Executing Stage 2: DecompositionStage
+2025-05-26 23:38:56,563 - asr-got-stage2 - INFO - Executing Decomposition Stage
+2025-05-26 23:38:56,563 - asr-got-stage2 - INFO - Decomposition complete: Created 7 dimension nodes
+2025-05-26 23:38:56,563 - asr-got-core - INFO - Executing Stage 3: HypothesisStage
+2025-05-26 23:38:56,563 - asr-got-stage3 - INFO - Executing Hypothesis Generation Stage
+2025-05-26 23:38:56,563 - asr-got-stage3 - INFO - Hypothesis generation complete: Created 35 hypotheses
+2025-05-26 23:38:56,563 - asr-got-core - INFO - Executing Stage 4: EvidenceStage
+2025-05-26 23:38:56,563 - asr-got-stage4 - INFO - Executing Evidence Integration Stage
+2025-05-26 23:38:56,563 - asr-got-stage4 - INFO - Evidence integration iteration 1/5
+2025-05-26 23:38:56,563 - asr-got-mcp-server - ERROR - Error processing ASR-GoT query: 'str' object has no attribute 'get'
+2025-05-26 23:38:56,564 - asr-got-mcp-server - ERROR - Traceback (most recent call last):
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/mcp-wrapper/mcp_server.py", line 267, in _execute_asr_got_query
+    result = processor.process_query(
+        query=query,
+        context=context,
+        parameters=options
+    )
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/src/asr_got/core.py", line 71, in process_query
+    result = stage.execute(graph, stage_context)
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/src/asr_got/stages/stage_4_evidence.py", line 58, in execute
+    evidence_result = self._execute_plan(graph, h_star, parameters)
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/src/asr_got/stages/stage_4_evidence.py", line 206, in _execute_plan
+    plan_type = plan.get("type", "search")
+                ^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'
+
+2025-05-26 23:38:56,564 - asr-got-mcp-server - INFO - Sent response for method: unknown
+2025-05-26 23:38:58,568 - asr-got-mcp-server - INFO - Received message: shutdown
+2025-05-26 23:38:58,568 - asr-got-mcp-server - INFO - Received message with method: shutdown, id: 4
+2025-05-26 23:38:58,569 - asr-got-mcp-server - INFO - Handling shutdown request
+2025-05-26 23:38:58,569 - asr-got-mcp-server - ERROR - Error writing message: 'NoneType' object has no attribute 'get'
+2025-05-26 23:38:58,569 - asr-got-mcp-server - INFO - Shutdown requested, exiting
+2025-05-26 23:39:43,381 - asr-got-mcp-server - INFO - ASR-GoT MCP Server started
+2025-05-26 23:39:43,381 - asr-got-mcp-server - INFO - Received message: initialize
+2025-05-26 23:39:43,381 - asr-got-mcp-server - INFO - Received message with method: initialize, id: 1
+2025-05-26 23:39:43,381 - asr-got-mcp-server - INFO - Handling initialize request: {'protocolVersion': '2024-11-05', 'capabilities': {}, 'clientInfo': {'name': 'test-client', 'version': '1.0.0'}}
+2025-05-26 23:39:43,381 - asr-got-mcp-server - INFO - Returning initialize response
+2025-05-26 23:39:43,382 - asr-got-mcp-server - INFO - Sent response for method: unknown
+2025-05-26 23:39:43,382 - asr-got-mcp-server - INFO - Received message: tools/list
+2025-05-26 23:39:43,382 - asr-got-mcp-server - INFO - Received message with method: tools/list, id: 2
+2025-05-26 23:39:43,382 - asr-got-mcp-server - INFO - Handling tools/list request
+2025-05-26 23:39:43,382 - asr-got-mcp-server - INFO - Sent response for method: unknown
+2025-05-26 23:39:43,382 - asr-got-mcp-server - INFO - Received message: tools/call
+2025-05-26 23:39:43,382 - asr-got-mcp-server - INFO - Received message with method: tools/call, id: 3
+2025-05-26 23:39:43,383 - asr-got-mcp-server - INFO - Handling tools/call request for tool: asr_got_query
+2025-05-26 23:39:43,383 - asr-got-mcp-server - INFO - Executing ASR-GoT query: What is 2+2?...
+2025-05-26 23:39:43,383 - asr-got-mcp-server - INFO - Initializing ASR-GoT processor...
+2025-05-26 23:39:43,383 - asr-got-core - INFO - ASR-GoT Processor initialized with 8 stages
+2025-05-26 23:39:43,383 - asr-got-mcp-server - INFO - ASR-GoT processor initialized
+2025-05-26 23:39:43,383 - asr-got-mcp-server - INFO - Processing query with context: {'complexity': 'low'}, options: {'max_nodes': 5}
+2025-05-26 23:39:43,383 - asr-got-core - INFO - Processing query: What is 2+2?...
+2025-05-26 23:39:43,383 - asr-got-graph - INFO - ASR-GoT Graph initialized
+2025-05-26 23:39:43,383 - asr-got-core - INFO - Executing Stage 1: InitializationStage
+2025-05-26 23:39:43,383 - asr-got-stage1 - INFO - Executing Initialization Stage
+2025-05-26 23:39:43,383 - asr-got-stage1 - INFO - Initialization complete: Root node created with ID n0
+2025-05-26 23:39:43,383 - asr-got-core - INFO - Executing Stage 2: DecompositionStage
+2025-05-26 23:39:43,383 - asr-got-stage2 - INFO - Executing Decomposition Stage
+2025-05-26 23:39:43,383 - asr-got-stage2 - INFO - Decomposition complete: Created 7 dimension nodes
+2025-05-26 23:39:43,383 - asr-got-core - INFO - Executing Stage 3: HypothesisStage
+2025-05-26 23:39:43,383 - asr-got-stage3 - INFO - Executing Hypothesis Generation Stage
+2025-05-26 23:39:43,383 - asr-got-stage3 - INFO - Hypothesis generation complete: Created 21 hypotheses
+2025-05-26 23:39:43,383 - asr-got-core - INFO - Executing Stage 4: EvidenceStage
+2025-05-26 23:39:43,383 - asr-got-stage4 - INFO - Executing Evidence Integration Stage
+2025-05-26 23:39:43,383 - asr-got-stage4 - INFO - Evidence integration iteration 1/5
+2025-05-26 23:39:43,383 - asr-got-mcp-server - ERROR - Error processing ASR-GoT query: 'str' object has no attribute 'get'
+2025-05-26 23:39:43,384 - asr-got-mcp-server - ERROR - Traceback (most recent call last):
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/mcp-wrapper/mcp_server.py", line 268, in _execute_asr_got_query
+    result = processor.process_query(
+        query=query,
+        context=context,
+        parameters=options
+    )
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/src/asr_got/core.py", line 71, in process_query
+    result = stage.execute(graph, stage_context)
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/src/asr_got/stages/stage_4_evidence.py", line 58, in execute
+    evidence_result = self._execute_plan(graph, h_star, parameters)
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/src/asr_got/stages/stage_4_evidence.py", line 206, in _execute_plan
+    plan_type = plan.get("type", "search")
+                ^^^^^^^^
+AttributeError: 'str' object has no attribute 'get'
+
+2025-05-26 23:39:43,384 - asr-got-mcp-server - INFO - Sent response for method: unknown
+2025-05-26 23:39:45,388 - asr-got-mcp-server - INFO - Received message: shutdown
+2025-05-26 23:39:45,390 - asr-got-mcp-server - INFO - Received message with method: shutdown, id: 4
+2025-05-26 23:39:45,390 - asr-got-mcp-server - INFO - Handling shutdown request
+2025-05-26 23:39:45,391 - asr-got-mcp-server - ERROR - Error writing message: 'NoneType' object has no attribute 'get'
+2025-05-26 23:40:38,231 - asr-got-mcp-server - INFO - ASR-GoT MCP Server started
+2025-05-26 23:40:38,231 - asr-got-mcp-server - INFO - Received message: initialize
+2025-05-26 23:40:38,232 - asr-got-mcp-server - INFO - Received message with method: initialize, id: 1
+2025-05-26 23:40:38,232 - asr-got-mcp-server - INFO - Handling initialize request: {'protocolVersion': '2024-11-05', 'capabilities': {}, 'clientInfo': {'name': 'test-client', 'version': '1.0.0'}}
+2025-05-26 23:40:38,232 - asr-got-mcp-server - INFO - Returning initialize response
+2025-05-26 23:40:38,232 - asr-got-mcp-server - INFO - Sent response for method: unknown
+2025-05-26 23:40:38,232 - asr-got-mcp-server - INFO - Received message: tools/list
+2025-05-26 23:40:38,233 - asr-got-mcp-server - INFO - Received message with method: tools/list, id: 2
+2025-05-26 23:40:38,233 - asr-got-mcp-server - INFO - Handling tools/list request
+2025-05-26 23:40:38,233 - asr-got-mcp-server - INFO - Sent response for method: unknown
+2025-05-26 23:40:38,233 - asr-got-mcp-server - INFO - Received message: tools/call
+2025-05-26 23:40:38,233 - asr-got-mcp-server - INFO - Received message with method: tools/call, id: 3
+2025-05-26 23:40:38,233 - asr-got-mcp-server - INFO - Handling tools/call request for tool: asr_got_query
+2025-05-26 23:40:38,233 - asr-got-mcp-server - INFO - Executing ASR-GoT query: What is 2+2?...
+2025-05-26 23:40:38,233 - asr-got-mcp-server - INFO - Initializing ASR-GoT processor...
+2025-05-26 23:40:38,233 - asr-got-core - INFO - ASR-GoT Processor initialized with 8 stages
+2025-05-26 23:40:38,233 - asr-got-mcp-server - INFO - ASR-GoT processor initialized
+2025-05-26 23:40:38,233 - asr-got-mcp-server - INFO - Processing query with context: {'complexity': 'low'}, options: {'max_nodes': 5}
+2025-05-26 23:40:38,233 - asr-got-core - INFO - Processing query: What is 2+2?...
+2025-05-26 23:40:38,233 - asr-got-graph - INFO - ASR-GoT Graph initialized
+2025-05-26 23:40:38,233 - asr-got-core - INFO - Executing Stage 1: InitializationStage
+2025-05-26 23:40:38,233 - asr-got-stage1 - INFO - Executing Initialization Stage
+2025-05-26 23:40:38,233 - asr-got-stage1 - INFO - Initialization complete: Root node created with ID n0
+2025-05-26 23:40:38,233 - asr-got-core - INFO - Executing Stage 2: DecompositionStage
+2025-05-26 23:40:38,233 - asr-got-stage2 - INFO - Executing Decomposition Stage
+2025-05-26 23:40:38,233 - asr-got-stage2 - INFO - Decomposition complete: Created 7 dimension nodes
+2025-05-26 23:40:38,233 - asr-got-core - INFO - Executing Stage 3: HypothesisStage
+2025-05-26 23:40:38,234 - asr-got-stage3 - INFO - Executing Hypothesis Generation Stage
+2025-05-26 23:40:38,234 - asr-got-stage3 - INFO - Hypothesis generation complete: Created 28 hypotheses
+2025-05-26 23:40:38,234 - asr-got-core - INFO - Executing Stage 4: EvidenceStage
+2025-05-26 23:40:38,234 - asr-got-stage4 - INFO - Executing Evidence Integration Stage
+2025-05-26 23:40:38,234 - asr-got-stage4 - INFO - Evidence integration iteration 1/5
+2025-05-26 23:40:38,234 - asr-got-stage4 - INFO - Evidence integration iteration 2/5
+2025-05-26 23:40:38,234 - asr-got-stage4 - INFO - Evidence integration iteration 3/5
+2025-05-26 23:40:38,234 - asr-got-stage4 - INFO - Evidence integration iteration 4/5
+2025-05-26 23:40:38,234 - asr-got-stage4 - INFO - Evidence integration iteration 5/5
+2025-05-26 23:40:38,237 - asr-got-graph - INFO - Calculated topology metrics for 41 nodes
+2025-05-26 23:40:38,237 - asr-got-stage4 - INFO - Evidence integration complete: 5 evidence nodes, 0 IBNs, 0 hyperedges
+2025-05-26 23:40:38,237 - asr-got-core - INFO - Executing Stage 5: PruningStage
+2025-05-26 23:40:38,237 - asr-got-stage5 - INFO - Executing Pruning/Merging Stage
+2025-05-26 23:40:38,237 - asr-got-mcp-server - ERROR - Error processing ASR-GoT query: unhashable type: 'dict'
+2025-05-26 23:40:38,238 - asr-got-mcp-server - ERROR - Traceback (most recent call last):
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/mcp-wrapper/mcp_server.py", line 268, in _execute_asr_got_query
+    result = processor.process_query(
+        query=query,
+        context=context,
+        parameters=options
+    )
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/src/asr_got/core.py", line 71, in process_query
+    result = stage.execute(graph, stage_context)
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/src/asr_got/stages/stage_5_pruning.py", line 101, in execute
+    overlap = calculate_semantic_overlap(node1_data, node2_data)
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/src/asr_got/utils/metadata_utils.py", line 53, in calculate_semantic_overlap
+    set2 = set(val2)
+TypeError: unhashable type: 'dict'
+
+2025-05-26 23:40:38,238 - asr-got-mcp-server - INFO - Sent response for method: unknown
+2025-05-26 23:40:40,239 - asr-got-mcp-server - INFO - Received message: shutdown
+2025-05-26 23:40:40,241 - asr-got-mcp-server - INFO - Received message with method: shutdown, id: 4
+2025-05-26 23:40:40,241 - asr-got-mcp-server - INFO - Handling shutdown request
+2025-05-26 23:40:40,241 - asr-got-mcp-server - ERROR - Error writing message: 'NoneType' object has no attribute 'get'
+2025-05-26 23:40:40,241 - asr-got-mcp-server - INFO - Shutdown requested, exiting
+2025-05-26 23:41:44,452 - asr-got-mcp-server - INFO - ASR-GoT MCP Server started
+2025-05-26 23:41:44,452 - asr-got-mcp-server - INFO - Received message: initialize
+2025-05-26 23:41:44,453 - asr-got-mcp-server - INFO - Received message with method: initialize, id: 1
+2025-05-26 23:41:44,453 - asr-got-mcp-server - INFO - Handling initialize request: {'protocolVersion': '2024-11-05', 'capabilities': {}, 'clientInfo': {'name': 'test-client', 'version': '1.0.0'}}
+2025-05-26 23:41:44,453 - asr-got-mcp-server - INFO - Returning initialize response
+2025-05-26 23:41:44,453 - asr-got-mcp-server - INFO - Sent response for method: unknown
+2025-05-26 23:41:44,453 - asr-got-mcp-server - INFO - Received message: tools/list
+2025-05-26 23:41:44,453 - asr-got-mcp-server - INFO - Received message with method: tools/list, id: 2
+2025-05-26 23:41:44,453 - asr-got-mcp-server - INFO - Handling tools/list request
+2025-05-26 23:41:44,453 - asr-got-mcp-server - INFO - Sent response for method: unknown
+2025-05-26 23:41:44,453 - asr-got-mcp-server - INFO - Received message: tools/call
+2025-05-26 23:41:44,453 - asr-got-mcp-server - INFO - Received message with method: tools/call, id: 3
+2025-05-26 23:41:44,453 - asr-got-mcp-server - INFO - Handling tools/call request for tool: asr_got_query
+2025-05-26 23:41:44,454 - asr-got-mcp-server - INFO - Executing ASR-GoT query: What is 2+2?...
+2025-05-26 23:41:44,454 - asr-got-mcp-server - INFO - Initializing ASR-GoT processor...
+2025-05-26 23:41:44,454 - asr-got-core - INFO - ASR-GoT Processor initialized with 8 stages
+2025-05-26 23:41:44,454 - asr-got-mcp-server - INFO - ASR-GoT processor initialized
+2025-05-26 23:41:44,454 - asr-got-mcp-server - INFO - Processing query with context: {'complexity': 'low'}, options: {'max_nodes': 5}
+2025-05-26 23:41:44,454 - asr-got-core - INFO - Processing query: What is 2+2?...
+2025-05-26 23:41:44,454 - asr-got-graph - INFO - ASR-GoT Graph initialized
+2025-05-26 23:41:44,454 - asr-got-core - INFO - Executing Stage 1: InitializationStage
+2025-05-26 23:41:44,454 - asr-got-stage1 - INFO - Executing Initialization Stage
+2025-05-26 23:41:44,454 - asr-got-stage1 - INFO - Initialization complete: Root node created with ID n0
+2025-05-26 23:41:44,454 - asr-got-core - INFO - Executing Stage 2: DecompositionStage
+2025-05-26 23:41:44,454 - asr-got-stage2 - INFO - Executing Decomposition Stage
+2025-05-26 23:41:44,454 - asr-got-stage2 - INFO - Decomposition complete: Created 7 dimension nodes
+2025-05-26 23:41:44,454 - asr-got-core - INFO - Executing Stage 3: HypothesisStage
+2025-05-26 23:41:44,454 - asr-got-stage3 - INFO - Executing Hypothesis Generation Stage
+2025-05-26 23:41:44,454 - asr-got-stage3 - INFO - Hypothesis generation complete: Created 35 hypotheses
+2025-05-26 23:41:44,454 - asr-got-core - INFO - Executing Stage 4: EvidenceStage
+2025-05-26 23:41:44,454 - asr-got-stage4 - INFO - Executing Evidence Integration Stage
+2025-05-26 23:41:44,454 - asr-got-stage4 - INFO - Evidence integration iteration 1/5
+2025-05-26 23:41:44,454 - asr-got-stage4 - INFO - Evidence integration iteration 2/5
+2025-05-26 23:41:44,454 - asr-got-stage4 - INFO - Evidence integration iteration 3/5
+2025-05-26 23:41:44,455 - asr-got-stage4 - INFO - Evidence integration iteration 4/5
+2025-05-26 23:41:44,455 - asr-got-stage4 - INFO - Evidence integration iteration 5/5
+2025-05-26 23:41:44,457 - asr-got-graph - INFO - Calculated topology metrics for 48 nodes
+2025-05-26 23:41:44,457 - asr-got-stage4 - INFO - Evidence integration complete: 5 evidence nodes, 0 IBNs, 0 hyperedges
+2025-05-26 23:41:44,457 - asr-got-core - INFO - Executing Stage 5: PruningStage
+2025-05-26 23:41:44,458 - asr-got-stage5 - INFO - Executing Pruning/Merging Stage
+2025-05-26 23:41:44,461 - asr-got-mcp-server - ERROR - Error processing ASR-GoT query: OutEdgeView.__call__() got an unexpected keyword argument 'keys'
+2025-05-26 23:41:44,462 - asr-got-mcp-server - ERROR - Traceback (most recent call last):
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/mcp-wrapper/mcp_server.py", line 268, in _execute_asr_got_query
+    result = processor.process_query(
+        query=query,
+        context=context,
+        parameters=options
+    )
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/src/asr_got/core.py", line 71, in process_query
+    result = stage.execute(graph, stage_context)
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/src/asr_got/stages/stage_5_pruning.py", line 134, in execute
+    for u, v, key, data in list(graph.graph.edges(source_id, data=True, keys=True)):
+                                ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: OutEdgeView.__call__() got an unexpected keyword argument 'keys'
+
+2025-05-26 23:41:44,462 - asr-got-mcp-server - INFO - Sent response for method: unknown
+2025-05-26 23:41:46,458 - asr-got-mcp-server - INFO - Received message: shutdown
+2025-05-26 23:41:46,458 - asr-got-mcp-server - INFO - Received message with method: shutdown, id: 4
+2025-05-26 23:41:46,458 - asr-got-mcp-server - INFO - Handling shutdown request
+2025-05-26 23:41:46,459 - asr-got-mcp-server - ERROR - Error writing message: 'NoneType' object has no attribute 'get'
+2025-05-26 23:41:46,459 - asr-got-mcp-server - INFO - Shutdown requested, exiting
+2025-05-26 23:42:40,693 - asr-got-mcp-server - INFO - ASR-GoT MCP Server started
+2025-05-26 23:42:40,693 - asr-got-mcp-server - INFO - Received message: initialize
+2025-05-26 23:42:40,693 - asr-got-mcp-server - INFO - Received message with method: initialize, id: 1
+2025-05-26 23:42:40,693 - asr-got-mcp-server - INFO - Handling initialize request: {'protocolVersion': '2024-11-05', 'capabilities': {}, 'clientInfo': {'name': 'test-client', 'version': '1.0.0'}}
+2025-05-26 23:42:40,693 - asr-got-mcp-server - INFO - Returning initialize response
+2025-05-26 23:42:40,693 - asr-got-mcp-server - INFO - Sent response for method: unknown
+2025-05-26 23:42:40,693 - asr-got-mcp-server - INFO - Received message: tools/list
+2025-05-26 23:42:40,694 - asr-got-mcp-server - INFO - Received message with method: tools/list, id: 2
+2025-05-26 23:42:40,694 - asr-got-mcp-server - INFO - Handling tools/list request
+2025-05-26 23:42:40,694 - asr-got-mcp-server - INFO - Sent response for method: unknown
+2025-05-26 23:42:40,694 - asr-got-mcp-server - INFO - Received message: tools/call
+2025-05-26 23:42:40,694 - asr-got-mcp-server - INFO - Received message with method: tools/call, id: 3
+2025-05-26 23:42:40,694 - asr-got-mcp-server - INFO - Handling tools/call request for tool: asr_got_query
+2025-05-26 23:42:40,694 - asr-got-mcp-server - INFO - Executing ASR-GoT query: What is 2+2?...
+2025-05-26 23:42:40,694 - asr-got-mcp-server - INFO - Initializing ASR-GoT processor...
+2025-05-26 23:42:40,694 - asr-got-core - INFO - ASR-GoT Processor initialized with 8 stages
+2025-05-26 23:42:40,694 - asr-got-mcp-server - INFO - ASR-GoT processor initialized
+2025-05-26 23:42:40,694 - asr-got-mcp-server - INFO - Processing query with context: {'complexity': 'low'}, options: {'max_nodes': 5}
+2025-05-26 23:42:40,694 - asr-got-core - INFO - Processing query: What is 2+2?...
+2025-05-26 23:42:40,694 - asr-got-graph - INFO - ASR-GoT Graph initialized
+2025-05-26 23:42:40,694 - asr-got-core - INFO - Executing Stage 1: InitializationStage
+2025-05-26 23:42:40,694 - asr-got-stage1 - INFO - Executing Initialization Stage
+2025-05-26 23:42:40,694 - asr-got-stage1 - INFO - Initialization complete: Root node created with ID n0
+2025-05-26 23:42:40,694 - asr-got-core - INFO - Executing Stage 2: DecompositionStage
+2025-05-26 23:42:40,694 - asr-got-stage2 - INFO - Executing Decomposition Stage
+2025-05-26 23:42:40,694 - asr-got-stage2 - INFO - Decomposition complete: Created 7 dimension nodes
+2025-05-26 23:42:40,694 - asr-got-core - INFO - Executing Stage 3: HypothesisStage
+2025-05-26 23:42:40,694 - asr-got-stage3 - INFO - Executing Hypothesis Generation Stage
+2025-05-26 23:42:40,695 - asr-got-stage3 - INFO - Hypothesis generation complete: Created 28 hypotheses
+2025-05-26 23:42:40,695 - asr-got-core - INFO - Executing Stage 4: EvidenceStage
+2025-05-26 23:42:40,695 - asr-got-stage4 - INFO - Executing Evidence Integration Stage
+2025-05-26 23:42:40,695 - asr-got-stage4 - INFO - Evidence integration iteration 1/5
+2025-05-26 23:42:40,695 - asr-got-stage4 - INFO - Evidence integration iteration 2/5
+2025-05-26 23:42:40,695 - asr-got-stage4 - INFO - Evidence integration iteration 3/5
+2025-05-26 23:42:40,695 - asr-got-stage4 - INFO - Evidence integration iteration 4/5
+2025-05-26 23:42:40,695 - asr-got-stage4 - INFO - Evidence integration iteration 5/5
+2025-05-26 23:42:40,698 - asr-got-graph - INFO - Calculated topology metrics for 41 nodes
+2025-05-26 23:42:40,698 - asr-got-stage4 - INFO - Evidence integration complete: 5 evidence nodes, 0 IBNs, 0 hyperedges
+2025-05-26 23:42:40,698 - asr-got-core - INFO - Executing Stage 5: PruningStage
+2025-05-26 23:42:40,698 - asr-got-stage5 - INFO - Executing Pruning/Merging Stage
+2025-05-26 23:42:40,700 - asr-got-stage5 - INFO - Pruning/Merging complete: Pruned 0 nodes, merged 3 nodes
+2025-05-26 23:42:40,700 - asr-got-core - INFO - Executing Stage 6: SubgraphStage
+2025-05-26 23:42:40,700 - asr-got-stage6 - INFO - Executing Subgraph Extraction Stage
+2025-05-26 23:42:40,701 - asr-got-stage6 - INFO - Subgraph extraction complete: Extracted 2 subgraphs
+2025-05-26 23:42:40,701 - asr-got-core - INFO - Executing Stage 7: CompositionStage
+2025-05-26 23:42:40,701 - asr-got-stage7 - INFO - Executing Composition Stage
+2025-05-26 23:42:40,701 - asr-got-stage7 - INFO - Composition complete: Generated output with 4 sections
+2025-05-26 23:42:40,701 - asr-got-core - INFO - Executing Stage 8: ReflectionStage
+2025-05-26 23:42:40,701 - asr-got-stage8 - INFO - Executing Reflection Stage
+2025-05-26 23:42:40,701 - asr-got-mcp-server - ERROR - Error processing ASR-GoT query: argument of type 'NoneType' is not iterable
+2025-05-26 23:42:40,702 - asr-got-mcp-server - ERROR - Traceback (most recent call last):
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/mcp-wrapper/mcp_server.py", line 268, in _execute_asr_got_query
+    result = processor.process_query(
+        query=query,
+        context=context,
+        parameters=options
+    )
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/src/asr_got/core.py", line 71, in process_query
+    result = stage.execute(graph, stage_context)
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/src/asr_got/stages/stage_8_reflection.py", line 84, in execute
+    temporal_check = self._check_temporal_consistency(graph)
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/src/asr_got/stages/stage_8_reflection.py", line 389, in _check_temporal_consistency
+    if data.get("edge_type") == "temporal" or "temporal" in data.get("edge_subtype", ""):
+                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: argument of type 'NoneType' is not iterable
+
+2025-05-26 23:42:40,702 - asr-got-mcp-server - INFO - Sent response for method: unknown
+2025-05-26 23:42:42,699 - asr-got-mcp-server - INFO - Received message: shutdown
+2025-05-26 23:42:42,700 - asr-got-mcp-server - INFO - Received message with method: shutdown, id: 4
+2025-05-26 23:42:42,700 - asr-got-mcp-server - INFO - Handling shutdown request
+2025-05-26 23:42:42,701 - asr-got-mcp-server - ERROR - Error writing message: 'NoneType' object has no attribute 'get'
+2025-05-26 23:42:42,701 - asr-got-mcp-server - INFO - Shutdown requested, exiting
+2025-05-26 23:43:48,356 - asr-got-mcp-server - INFO - ASR-GoT MCP Server started
+2025-05-26 23:43:48,356 - asr-got-mcp-server - INFO - Received message: initialize
+2025-05-26 23:43:48,356 - asr-got-mcp-server - INFO - Received message with method: initialize, id: 1
+2025-05-26 23:43:48,356 - asr-got-mcp-server - INFO - Handling initialize request: {'protocolVersion': '2024-11-05', 'capabilities': {}, 'clientInfo': {'name': 'test-client', 'version': '1.0.0'}}
+2025-05-26 23:43:48,356 - asr-got-mcp-server - INFO - Returning initialize response
+2025-05-26 23:43:48,356 - asr-got-mcp-server - INFO - Sent response for method: unknown
+2025-05-26 23:43:48,356 - asr-got-mcp-server - INFO - Received message: tools/list
+2025-05-26 23:43:48,357 - asr-got-mcp-server - INFO - Received message with method: tools/list, id: 2
+2025-05-26 23:43:48,357 - asr-got-mcp-server - INFO - Handling tools/list request
+2025-05-26 23:43:48,357 - asr-got-mcp-server - INFO - Sent response for method: unknown
+2025-05-26 23:43:48,357 - asr-got-mcp-server - INFO - Received message: tools/call
+2025-05-26 23:43:48,357 - asr-got-mcp-server - INFO - Received message with method: tools/call, id: 3
+2025-05-26 23:43:48,357 - asr-got-mcp-server - INFO - Handling tools/call request for tool: asr_got_query
+2025-05-26 23:43:48,357 - asr-got-mcp-server - INFO - Executing ASR-GoT query: What is 2+2?...
+2025-05-26 23:43:48,357 - asr-got-mcp-server - INFO - Initializing ASR-GoT processor...
+2025-05-26 23:43:48,357 - asr-got-core - INFO - ASR-GoT Processor initialized with 8 stages
+2025-05-26 23:43:48,357 - asr-got-mcp-server - INFO - ASR-GoT processor initialized
+2025-05-26 23:43:48,357 - asr-got-mcp-server - INFO - Processing query with context: {'complexity': 'low'}, options: {'max_nodes': 5}
+2025-05-26 23:43:48,357 - asr-got-core - INFO - Processing query: What is 2+2?...
+2025-05-26 23:43:48,357 - asr-got-graph - INFO - ASR-GoT Graph initialized
+2025-05-26 23:43:48,357 - asr-got-core - INFO - Executing Stage 1: InitializationStage
+2025-05-26 23:43:48,357 - asr-got-stage1 - INFO - Executing Initialization Stage
+2025-05-26 23:43:48,357 - asr-got-stage1 - INFO - Initialization complete: Root node created with ID n0
+2025-05-26 23:43:48,357 - asr-got-core - INFO - Executing Stage 2: DecompositionStage
+2025-05-26 23:43:48,357 - asr-got-stage2 - INFO - Executing Decomposition Stage
+2025-05-26 23:43:48,357 - asr-got-stage2 - INFO - Decomposition complete: Created 7 dimension nodes
+2025-05-26 23:43:48,357 - asr-got-core - INFO - Executing Stage 3: HypothesisStage
+2025-05-26 23:43:48,357 - asr-got-stage3 - INFO - Executing Hypothesis Generation Stage
+2025-05-26 23:43:48,358 - asr-got-stage3 - INFO - Hypothesis generation complete: Created 28 hypotheses
+2025-05-26 23:43:48,358 - asr-got-core - INFO - Executing Stage 4: EvidenceStage
+2025-05-26 23:43:48,358 - asr-got-stage4 - INFO - Executing Evidence Integration Stage
+2025-05-26 23:43:48,358 - asr-got-stage4 - INFO - Evidence integration iteration 1/5
+2025-05-26 23:43:48,358 - asr-got-stage4 - INFO - Evidence integration iteration 2/5
+2025-05-26 23:43:48,358 - asr-got-stage4 - INFO - Evidence integration iteration 3/5
+2025-05-26 23:43:48,358 - asr-got-stage4 - INFO - Evidence integration iteration 4/5
+2025-05-26 23:43:48,358 - asr-got-stage4 - INFO - Evidence integration iteration 5/5
+2025-05-26 23:43:48,361 - asr-got-graph - INFO - Calculated topology metrics for 41 nodes
+2025-05-26 23:43:48,361 - asr-got-stage4 - INFO - Evidence integration complete: 5 evidence nodes, 0 IBNs, 0 hyperedges
+2025-05-26 23:43:48,361 - asr-got-core - INFO - Executing Stage 5: PruningStage
+2025-05-26 23:43:48,361 - asr-got-stage5 - INFO - Executing Pruning/Merging Stage
+2025-05-26 23:43:48,363 - asr-got-stage5 - INFO - Pruning/Merging complete: Pruned 0 nodes, merged 4 nodes
+2025-05-26 23:43:48,363 - asr-got-core - INFO - Executing Stage 6: SubgraphStage
+2025-05-26 23:43:48,363 - asr-got-stage6 - INFO - Executing Subgraph Extraction Stage
+2025-05-26 23:43:48,363 - asr-got-stage6 - INFO - Subgraph extraction complete: Extracted 2 subgraphs
+2025-05-26 23:43:48,363 - asr-got-core - INFO - Executing Stage 7: CompositionStage
+2025-05-26 23:43:48,363 - asr-got-stage7 - INFO - Executing Composition Stage
+2025-05-26 23:43:48,364 - asr-got-stage7 - INFO - Composition complete: Generated output with 4 sections
+2025-05-26 23:43:48,364 - asr-got-core - INFO - Executing Stage 8: ReflectionStage
+2025-05-26 23:43:48,364 - asr-got-stage8 - INFO - Executing Reflection Stage
+2025-05-26 23:43:48,364 - asr-got-stage8 - INFO - Reflection complete: 5 passed, 1 warnings, 2 failures
+2025-05-26 23:43:48,364 - asr-got-mcp-server - ERROR - Error processing ASR-GoT query: OutEdgeView.__call__() got an unexpected keyword argument 'keys'
+2025-05-26 23:43:48,364 - asr-got-mcp-server - ERROR - Traceback (most recent call last):
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/mcp-wrapper/mcp_server.py", line 268, in _execute_asr_got_query
+    result = processor.process_query(
+        query=query,
+        context=context,
+        parameters=options
+    )
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/src/asr_got/core.py", line 97, in process_query
+    "graph_state": self.get_graph_state(session_id)
+                   ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/src/asr_got/core.py", line 111, in get_graph_state
+    return graph.to_dict()
+           ~~~~~~~~~~~~~^^
+  File "/Users/derekvitrano/Developer/Work/tools/Graph-of-Thought-MCP/src/asr_got/models/graph.py", line 241, in to_dict
+    for u, v, k, data in self.graph.edges(keys=True, data=True):
+                         ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+TypeError: OutEdgeView.__call__() got an unexpected keyword argument 'keys'
+
+2025-05-26 23:43:48,365 - asr-got-mcp-server - INFO - Sent response for method: unknown
+2025-05-26 23:43:50,359 - asr-got-mcp-server - INFO - Received message: shutdown
+2025-05-26 23:43:50,360 - asr-got-mcp-server - INFO - Received message with method: shutdown, id: 4
+2025-05-26 23:43:50,360 - asr-got-mcp-server - INFO - Handling shutdown request
+2025-05-26 23:43:50,360 - asr-got-mcp-server - ERROR - Error writing message: 'NoneType' object has no attribute 'get'
+2025-05-26 23:43:50,360 - asr-got-mcp-server - INFO - Shutdown requested, exiting
+2025-05-26 23:46:25,324 - asr-got-mcp-server - INFO - ASR-GoT MCP Server started
+2025-05-26 23:46:25,324 - asr-got-mcp-server - INFO - Received message: initialize
+2025-05-26 23:46:25,324 - asr-got-mcp-server - INFO - Received message with method: initialize, id: 1
+2025-05-26 23:46:25,324 - asr-got-mcp-server - INFO - Handling initialize request: {'protocolVersion': '2024-11-05', 'capabilities': {}, 'clientInfo': {'name': 'test-client', 'version': '1.0.0'}}
+2025-05-26 23:46:25,324 - asr-got-mcp-server - INFO - Returning initialize response
+2025-05-26 23:46:25,325 - asr-got-mcp-server - INFO - Sent response for method: unknown
+2025-05-26 23:46:25,325 - asr-got-mcp-server - INFO - Received message: tools/list
+2025-05-26 23:46:25,325 - asr-got-mcp-server - INFO - Received message with method: tools/list, id: 2
+2025-05-26 23:46:25,325 - asr-got-mcp-server - INFO - Handling tools/list request
+2025-05-26 23:46:25,325 - asr-got-mcp-server - INFO - Sent response for method: unknown
+2025-05-26 23:46:25,325 - asr-got-mcp-server - INFO - Received message: tools/call
+2025-05-26 23:46:25,325 - asr-got-mcp-server - INFO - Received message with method: tools/call, id: 3
+2025-05-26 23:46:25,325 - asr-got-mcp-server - INFO - Handling tools/call request for tool: asr_got_query
+2025-05-26 23:46:25,325 - asr-got-mcp-server - INFO - Executing ASR-GoT query: What is 2+2?...
+2025-05-26 23:46:25,325 - asr-got-mcp-server - INFO - Initializing ASR-GoT processor...
+2025-05-26 23:46:25,326 - asr-got-core - INFO - ASR-GoT Processor initialized with 8 stages
+2025-05-26 23:46:25,326 - asr-got-mcp-server - INFO - ASR-GoT processor initialized
+2025-05-26 23:46:25,326 - asr-got-mcp-server - INFO - Processing query with context: {'complexity': 'low'}, options: {'max_nodes': 5}
+2025-05-26 23:46:25,326 - asr-got-core - INFO - Processing query: What is 2+2?...
+2025-05-26 23:46:25,326 - asr-got-graph - INFO - ASR-GoT Graph initialized
+2025-05-26 23:46:25,326 - asr-got-core - INFO - Executing Stage 1: InitializationStage
+2025-05-26 23:46:25,326 - asr-got-stage1 - INFO - Executing Initialization Stage
+2025-05-26 23:46:25,326 - asr-got-stage1 - INFO - Initialization complete: Root node created with ID n0
+2025-05-26 23:46:25,326 - asr-got-core - INFO - Executing Stage 2: DecompositionStage
+2025-05-26 23:46:25,326 - asr-got-stage2 - INFO - Executing Decomposition Stage
+2025-05-26 23:46:25,326 - asr-got-stage2 - INFO - Decomposition complete: Created 7 dimension nodes
+2025-05-26 23:46:25,326 - asr-got-core - INFO - Executing Stage 3: HypothesisStage
+2025-05-26 23:46:25,326 - asr-got-stage3 - INFO - Executing Hypothesis Generation Stage
+2025-05-26 23:46:25,326 - asr-got-stage3 - INFO - Hypothesis generation complete: Created 35 hypotheses
+2025-05-26 23:46:25,326 - asr-got-core - INFO - Executing Stage 4: EvidenceStage
+2025-05-26 23:46:25,326 - asr-got-stage4 - INFO - Executing Evidence Integration Stage
+2025-05-26 23:46:25,326 - asr-got-stage4 - INFO - Evidence integration iteration 1/5
+2025-05-26 23:46:25,326 - asr-got-stage4 - INFO - Evidence integration iteration 2/5
+2025-05-26 23:46:25,326 - asr-got-stage4 - INFO - Evidence integration iteration 3/5
+2025-05-26 23:46:25,327 - asr-got-stage4 - INFO - Evidence integration iteration 4/5
+2025-05-26 23:46:25,327 - asr-got-stage4 - INFO - Evidence integration iteration 5/5
+2025-05-26 23:46:25,329 - asr-got-graph - INFO - Calculated topology metrics for 48 nodes
+2025-05-26 23:46:25,329 - asr-got-stage4 - INFO - Evidence integration complete: 5 evidence nodes, 0 IBNs, 0 hyperedges
+2025-05-26 23:46:25,329 - asr-got-core - INFO - Executing Stage 5: PruningStage
+2025-05-26 23:46:25,329 - asr-got-stage5 - INFO - Executing Pruning/Merging Stage
+2025-05-26 23:46:25,333 - asr-got-stage5 - INFO - Pruning/Merging complete: Pruned 0 nodes, merged 5 nodes
+2025-05-26 23:46:25,333 - asr-got-core - INFO - Executing Stage 6: SubgraphStage
+2025-05-26 23:46:25,333 - asr-got-stage6 - INFO - Executing Subgraph Extraction Stage
+2025-05-26 23:46:25,333 - asr-got-stage6 - INFO - Subgraph extraction complete: Extracted 2 subgraphs
+2025-05-26 23:46:25,333 - asr-got-core - INFO - Executing Stage 7: CompositionStage
+2025-05-26 23:46:25,334 - asr-got-stage7 - INFO - Executing Composition Stage
+2025-05-26 23:46:25,334 - asr-got-stage7 - INFO - Composition complete: Generated output with 4 sections
+2025-05-26 23:46:25,334 - asr-got-core - INFO - Executing Stage 8: ReflectionStage
+2025-05-26 23:46:25,334 - asr-got-stage8 - INFO - Executing Reflection Stage
+2025-05-26 23:46:25,334 - asr-got-stage8 - INFO - Reflection complete: 5 passed, 2 warnings, 1 failures
+2025-05-26 23:46:25,334 - asr-got-core - INFO - Query processing completed for session 77a536bc-37b0-46b5-a109-1e5a0f985254
+2025-05-26 23:46:25,334 - asr-got-mcp-server - INFO - ASR-GoT result type: <class 'dict'>, keys: dict_keys(['result', 'reasoning_trace', 'confidence', 'graph_state'])
+2025-05-26 23:46:25,334 - asr-got-mcp-server - INFO - Sent response for method: unknown
+2025-05-26 23:46:27,333 - asr-got-mcp-server - INFO - Received message: shutdown
+2025-05-26 23:46:27,335 - asr-got-mcp-server - INFO - Received message with method: shutdown, id: 4
+2025-05-26 23:46:27,335 - asr-got-mcp-server - INFO - Handling shutdown request
+2025-05-26 23:46:27,336 - asr-got-mcp-server - ERROR - Error writing message: 'NoneType' object has no attribute 'get'
+2025-05-26 23:50:55,480 - asr-got-mcp-server - INFO - ASR-GoT MCP Server started

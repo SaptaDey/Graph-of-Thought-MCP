@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "asr-got": {
+      "command": "python",
+      "args": ["mcp-wrapper/mcp_server.py"],
+      "cwd": ".",
+      "env": {
+        "PYTHONPATH": "src"
+      }
+    }
+  }
+}
