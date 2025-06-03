@@ -8,33 +8,33 @@ logger = logging.getLogger("asr-got-stage8")
 class ReflectionStage:
     """
     Stage 8: Reflection
-    
+
     Performs self-audit of the analysis process and results.
     """
-    
+
     def execute(self, graph: ASRGoTGraph, context: Dict[str, Any]) -> Dict[str, Any]:
         """
         Execute the reflection stage.
-        
+
         Args:
             graph: The ASR-GoT graph
             context: Context from previous stages and initialization
-        
+
         Returns:
             Dictionary with reflection results
         """
         logger.info("Executing Reflection Stage")
-        
+
         parameters = context.get("parameters", {})
         composition_result = context.get("composition_result", {})
-        
+
         # Initialize audit results
         audit_results = {
             "passed": [],
             "warnings": [],
             "failures": []
         }
-        
+
         # 1. Check high-confidence/high-impact node coverage
         high_conf_impact_check = self._check_high_confidence_impact_coverage(graph)
         if high_conf_impact_check["status"] == "pass":
@@ -43,7 +43,7 @@ class ReflectionStage:
             audit_results["warnings"].append(high_conf_impact_check)
         else:
             audit_results["failures"].append(high_conf_impact_check)
-        
+
         # 2. Check bias flags
         bias_check = self._check_bias_flags(graph)
         if bias_check["status"] == "pass":
@@ -52,7 +52,7 @@ class ReflectionStage:
             audit_results["warnings"].append(bias_check)
         else:
             audit_results["failures"].append(bias_check)
-        
+
         # 3. Check knowledge gaps addressed
         gaps_check = self._check_knowledge_gaps_addressed(graph, composition_result)
         if gaps_check["status"] == "pass":
@@ -61,7 +61,7 @@ class ReflectionStage:
             audit_results["warnings"].append(gaps_check)
         else:
             audit_results["failures"].append(gaps_check)
-        
+
         # 4. Check falsifiability criteria
         falsifiability_check = self._check_falsifiability(graph)
         if falsifiability_check["status"] == "pass":
@@ -70,7 +70,7 @@ class ReflectionStage:
             audit_results["warnings"].append(falsifiability_check)
         else:
             audit_results["failures"].append(falsifiability_check)
-        
+
         # 5. Check causal claim validity
         causal_check = self._check_causal_claims(graph)
         if causal_check["status"] == "pass":
@@ -79,7 +79,7 @@ class ReflectionStage:
             audit_results["warnings"].append(causal_check)
         else:
             audit_results["failures"].append(causal_check)
-        
+
         # 6. Check temporal consistency
         temporal_check = self._check_temporal_consistency(graph)
         if temporal_check["status"] == "pass":
@@ -88,7 +88,7 @@ class ReflectionStage:
             audit_results["warnings"].append(temporal_check)
         else:
             audit_results["failures"].append(temporal_check)
-        
+
         # 7. Check statistical rigor
         statistical_check = self._check_statistical_rigor(graph)
         if statistical_check["status"] == "pass":
@@ -97,7 +97,7 @@ class ReflectionStage:
             audit_results["warnings"].append(statistical_check)
         else:
             audit_results["failures"].append(statistical_check)
-        
+
         # 8. Check collaboration attributions
         attribution_check = self._check_collaboration_attributions(graph)
         if attribution_check["status"] == "pass":
@@ -106,20 +106,20 @@ class ReflectionStage:
             audit_results["warnings"].append(attribution_check)
         else:
             audit_results["failures"].append(attribution_check)
-        
+
         # Calculate final confidence based on audit
         passed_count = len(audit_results["passed"])
         warning_count = len(audit_results["warnings"])
         failure_count = len(audit_results["failures"])
-        
+
         total_checks = passed_count + warning_count + failure_count
-        
+
         # Calculate empirical support based on statistical checks
         empirical = 0.9 if statistical_check["status"] == "pass" else (0.6 if statistical_check["status"] == "warning" else 0.3)
-        
+
         # Calculate theoretical basis based on causal checks
         theoretical = 0.9 if causal_check["status"] == "pass" else (0.6 if causal_check["status"] == "warning" else 0.3)
-        
+
         # Calculate methodological rigor based on falsifiability and bias checks
         methodology_scores = []
         for check in [falsifiability_check, bias_check]:
@@ -130,13 +130,13 @@ class ReflectionStage:
             else:
                 methodology_scores.append(0.3)
         methodological = sum(methodology_scores) / len(methodology_scores)
-        
+
         # Calculate consensus alignment based on attribution checks
         consensus = 0.9 if attribution_check["status"] == "pass" else (0.6 if attribution_check["status"] == "warning" else 0.3)
-        
+
         # Final confidence vector
         final_confidence = [empirical, theoretical, methodological, consensus]
-        
+
         # Summary based on failures and warnings
         if failure_count > 0:
             reflection_summary = "Analysis has significant weaknesses that should be addressed."
@@ -144,9 +144,9 @@ class ReflectionStage:
             reflection_summary = "Analysis has some areas that could be improved."
         else:
             reflection_summary = "Analysis appears robust across all audit dimensions."
-        
+
         logger.info(f"Reflection complete: {passed_count} passed, {warning_count} warnings, {failure_count} failures")
-        
+
         return {
             "audit_results": audit_results,
             "final_confidence": final_confidence,
@@ -159,24 +159,24 @@ class ReflectionStage:
                 "total_checks": total_checks
             }
         }
-    
+
     def _check_high_confidence_impact_coverage(self, graph: ASRGoTGraph) -> Dict[str, Any]:
         """Check if high-confidence and high-impact nodes are well-represented in the graph."""
         # Count high-confidence nodes
         high_conf_count = 0
         high_impact_count = 0
-        
+
         for _, data in graph.graph.nodes(data=True):
             # Check confidence
             confidence = data.get("confidence", [])
             if confidence and sum(confidence) / len(confidence) >= 0.7:
                 high_conf_count += 1
-            
+
             # Check impact
             impact = data.get("impact_score", 0)
             if impact >= 0.7:
                 high_impact_count += 1
-        
+
         # Calculate percentage
         total_nodes = graph.graph.number_of_nodes()
         if total_nodes == 0:
@@ -185,10 +185,10 @@ class ReflectionStage:
                 "status": "failure",
                 "message": "Graph contains no nodes."
             }
-        
+
         conf_percentage = high_conf_count / total_nodes
         impact_percentage = high_impact_count / total_nodes
-        
+
         # Evaluate
         if conf_percentage >= 0.3 and impact_percentage >= 0.2:
             return {
@@ -208,24 +208,24 @@ class ReflectionStage:
                 "status": "failure",
                 "message": f"Poor coverage of high-confidence ({conf_percentage:.1%}) and high-impact ({impact_percentage:.1%}) nodes."
             }
-    
+
     def _check_bias_flags(self, graph: ASRGoTGraph) -> Dict[str, Any]:
         """Check if biases have been properly assessed and mitigated."""
         # Count nodes with bias flags
         flagged_nodes = 0
         serious_bias_nodes = 0
-        
+
         for _, data in graph.graph.nodes(data=True):
             # Check for bias flags
             bias_flags = data.get("bias_flags", [])
             if bias_flags:
                 flagged_nodes += 1
-                
+
                 # Check severity
                 for bias in bias_flags:
                     if isinstance(bias, dict) and bias.get("severity") == "high":
                         serious_bias_nodes += 1
-        
+
         # Evaluate
         if serious_bias_nodes > 0:
             return {
@@ -254,23 +254,23 @@ class ReflectionStage:
                     "status": "pass",
                     "message": "No bias flags detected."
                 }
-    
+
     def _check_knowledge_gaps_addressed(self, graph: ASRGoTGraph, composition_result: Dict[str, Any]) -> Dict[str, Any]:
         """Check if knowledge gaps are acknowledged and addressed."""
         # Count knowledge gap nodes
         gap_nodes = 0
-        
+
         for _, data in graph.graph.nodes(data=True):
             if data.get("node_type") == "placeholder_gap":
                 gap_nodes += 1
-        
+
         # Check if gaps are addressed in composition
         gaps_addressed = False
         for section in composition_result.get("sections", []):
             if "gap" in section.get("title", "").lower() or "gap" in section.get("type", "").lower():
                 gaps_addressed = True
                 break
-        
+
         # Evaluate
         if gap_nodes > 0 and gaps_addressed:
             return {
@@ -290,21 +290,21 @@ class ReflectionStage:
                 "status": "pass",
                 "message": "No significant knowledge gaps identified."
             }
-    
+
     def _check_falsifiability(self, graph: ASRGoTGraph) -> Dict[str, Any]:
         """Check if hypotheses have appropriate falsifiability criteria."""
         # Count hypothesis nodes
         hypothesis_nodes = 0
         falsifiable_nodes = 0
-        
+
         for _, data in graph.graph.nodes(data=True):
             if data.get("node_type") == "hypothesis":
                 hypothesis_nodes += 1
-                
+
                 # Check for falsification criteria
                 if "falsification_criteria" in data and data["falsification_criteria"]:
                     falsifiable_nodes += 1
-        
+
         # Evaluate
         if hypothesis_nodes == 0:
             return {
@@ -312,9 +312,9 @@ class ReflectionStage:
                 "status": "warning",
                 "message": "No hypothesis nodes found to evaluate falsifiability."
             }
-        
+
         falsifiable_percentage = falsifiable_nodes / hypothesis_nodes
-        
+
         if falsifiable_percentage >= 0.8:
             return {
                 "test": "falsifiability",
@@ -333,23 +333,23 @@ class ReflectionStage:
                 "status": "failure",
                 "message": f"Poor falsifiability: only {falsifiable_percentage:.1%} of hypotheses have falsification criteria."
             }
-    
+
     def _check_causal_claims(self, graph: ASRGoTGraph) -> Dict[str, Any]:
         """Check if causal claims are properly substantiated."""
         # Count causal edges
         causal_edges = 0
         well_supported_causal = 0
-        
+
         for _, _, data in graph.graph.edges(data=True):
             if data.get("edge_type") == "causal":
                 causal_edges += 1
-                
+
                 # Check for causal metadata
                 if "causal_metadata" in data and data["causal_metadata"]:
                     # Check if confounders are addressed
                     if "confounders" in data["causal_metadata"]:
                         well_supported_causal += 1
-        
+
         # Evaluate
         if causal_edges == 0:
             return {
@@ -357,9 +357,9 @@ class ReflectionStage:
                 "status": "pass",
                 "message": "No causal claims made in the analysis."
             }
-        
+
         supported_percentage = well_supported_causal / causal_edges
-        
+
         if supported_percentage >= 0.8:
             return {
                 "test": "causal_claims",
@@ -378,21 +378,22 @@ class ReflectionStage:
                 "status": "failure",
                 "message": f"Weak causal validity: only {supported_percentage:.1%} of causal claims are well-supported."
             }
-    
+
     def _check_temporal_consistency(self, graph: ASRGoTGraph) -> Dict[str, Any]:
         """Check for temporal consistency in the graph."""
         # Count temporal edges
         temporal_edges = 0
         consistent_temporal = 0
-        
+
         for _, _, data in graph.graph.edges(data=True):
-            if data.get("edge_type") == "temporal" or "temporal" in data.get("edge_subtype", ""):
+            edge_subtype = data.get("edge_subtype") or ""
+            if data.get("edge_type") == "temporal" or "temporal" in edge_subtype:
                 temporal_edges += 1
-                
+
                 # Check for temporal metadata
                 if "temporal_metadata" in data and data["temporal_metadata"]:
                     consistent_temporal += 1
-        
+
         # Evaluate
         if temporal_edges == 0:
             return {
@@ -400,9 +401,9 @@ class ReflectionStage:
                 "status": "pass",
                 "message": "No temporal claims made in the analysis."
             }
-        
+
         consistent_percentage = consistent_temporal / temporal_edges
-        
+
         if consistent_percentage >= 0.8:
             return {
                 "test": "temporal_consistency",
@@ -421,21 +422,21 @@ class ReflectionStage:
                 "status": "failure",
                 "message": f"Poor temporal consistency: only {consistent_percentage:.1%} of temporal relationships are well-defined."
             }
-    
+
     def _check_statistical_rigor(self, graph: ASRGoTGraph) -> Dict[str, Any]:
         """Check statistical rigor of evidence nodes."""
         # Count evidence nodes
         evidence_nodes = 0
         powered_nodes = 0
-        
+
         for _, data in graph.graph.nodes(data=True):
             if data.get("node_type") == "evidence":
                 evidence_nodes += 1
-                
+
                 # Check for statistical power
                 if "statistical_power" in data and data["statistical_power"] >= 0.7:
                     powered_nodes += 1
-        
+
         # Evaluate
         if evidence_nodes == 0:
             return {
@@ -443,9 +444,9 @@ class ReflectionStage:
                 "status": "warning",
                 "message": "No evidence nodes found to evaluate statistical rigor."
             }
-        
+
         powered_percentage = powered_nodes / evidence_nodes
-        
+
         if powered_percentage >= 0.8:
             return {
                 "test": "statistical_rigor",
@@ -464,16 +465,16 @@ class ReflectionStage:
                 "status": "failure",
                 "message": f"Poor statistical rigor: only {powered_percentage:.1%} of evidence has adequate statistical power."
             }
-    
+
     def _check_collaboration_attributions(self, graph: ASRGoTGraph) -> Dict[str, Any]:
         """Check if attributions are properly maintained."""
         # Count nodes with attribution metadata
         attributed_nodes = 0
-        
+
         for _, data in graph.graph.nodes(data=True):
             if "attribution" in data and data["attribution"]:
                 attributed_nodes += 1
-        
+
         # Simple check - in a real implementation, would be more complex
         if attributed_nodes > 0:
             return {
