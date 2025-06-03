@@ -15,12 +15,10 @@ class ASRGoTGraph:
     Core graph data structure for ASR-GoT.
     Implements the mathematical formalism from P1.11.
     """
-    
+
     def __init__(self):
         # Initialize the main graph structure
-        # Changed from DiGraph to MultiDiGraph to support multiple edges between nodes
-        # and enable the use of keys=True parameter in edges() method
-        self.graph = nx.MultiDiGraph()
+        self.graph = nx.DiGraph()
 
         # Separate structure for hyperedges
         self.hyperedges = {}
@@ -218,9 +216,7 @@ class ASRGoTGraph:
             }
 
             # Update node metadata with topology metrics
-            self.graph.nodes[node_id]["topology_metrics"] = topology_metrics[node_id]
-        
-        logger.info(f"Calculated topology metrics for {len(topology_metrics)} nodes")
+            self.graph.nodes[node_id]["topology_metrics"] = topology_metrics[node_id]        logger.info(f"Calculated topology metrics for {len(topology_metrics)} nodes")
         return topology_metrics
         
     def to_dict(self) -> Dict[str, Any]:
@@ -237,9 +233,7 @@ class ASRGoTGraph:
                 "type": data.get("node_type", ""),
                 "confidence": data.get("confidence", []),
                 "metadata": {k: v for k, v in data.items() if k not in ["node_id", "label", "node_type", "confidence"]}
-            })
-            
-        # Convert edges
+            })        # Convert edges
         edges = []
         # Check if we're dealing with a multigraph (which would use keys=True)
         is_multigraph = isinstance(self.graph, nx.MultiDiGraph) or isinstance(self.graph, nx.MultiGraph)
@@ -253,11 +247,6 @@ class ASRGoTGraph:
                         "edge_id": edge_id,
                         "source": u,
                         "target": v,
-                        "edge_type": data.get("edge_type", ""),
-                        "confidence": data.get("confidence", 0.0),
-                        "metadata": {key: val for key, val in data.items()
-                                    if key not in ["edge_id", "source", "target", "edge_type", "confidence", "is_virtual"]}
-                    })
         else:
             for u, v, data in self.graph.edges(data=True):
                 if not data.get("is_virtual", False):  # Skip virtual edges from hyperedges
@@ -266,11 +255,11 @@ class ASRGoTGraph:
                         "edge_id": edge_id,
                         "source": u,
                         "target": v,
-                        "edge_type": data.get("edge_type", ""),
-                        "confidence": data.get("confidence", 0.0),
-                        "metadata": {key: val for key, val in data.items()
-                                    if key not in ["edge_id", "source", "target", "edge_type", "confidence", "is_virtual"]}
-                    })
+                    "edge_type": data.get("edge_type", ""),
+                    "confidence": data.get("confidence", 0.0),
+                    "metadata": {key: val for key, val in data.items()
+                                if key not in ["edge_id", "source", "target", "edge_type", "confidence", "is_virtual"]}
+                })
 
         # Convert hyperedges
         hyperedges = []

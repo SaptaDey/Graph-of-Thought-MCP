@@ -86,7 +86,7 @@ Use the ASR-GoT tool to analyze this problem: What are the key challenges in dev
    ```python
    # Before: Heavy imports at startup
    from asr_got.core import ASRGoTProcessor
-   
+
    # After: Lazy loading when needed
    def _import_asr_got():
        global ASRGoTProcessor
@@ -109,10 +109,42 @@ Use the ASR-GoT tool to analyze this problem: What are the key challenges in dev
 - **Tools Available:** `asr_got_query` and `get_graph_state`
 - **Configuration:** Correct and verified
 
+## Additional Improvements (May 2025 Update)
+
+### Query Processing Timeout Handling
+
+We've implemented additional improvements to handle timeouts during query processing:
+
+1. **Asynchronous Query Processing:**
+   - Query processing now runs in a separate thread
+   - Configurable timeout prevents hanging on complex queries
+   - User-friendly error messages when processing takes too long
+
+2. **Configurable Timeout Parameter:**
+   - Added `timeout` parameter to the `asr_got_query` tool schema
+   - Default: 60 seconds
+   - Range: 10-300 seconds (configurable by user)
+   - Example usage: `Use the ASR-GoT tool with a timeout of 120 seconds to analyze...`
+
+3. **Enhanced Error Handling:**
+   - Graceful handling of timeout errors
+   - Detailed logging for troubleshooting
+   - Clear user feedback when queries exceed time limits
+
+### Technical Implementation:
+
+```python
+# Run query processing in a thread pool with timeout
+result = await asyncio.wait_for(
+    loop.run_in_executor(None, process_query_task),
+    timeout=timeout
+)
+```
+
 ## Next Steps
 
 1. **Restart Claude Desktop** to activate the fix
-2. **Test the ASR-GoT tools** in Claude Desktop
+2. **Test the ASR-GoT tools** in Claude Desktop with the new timeout parameter
 3. **Enjoy fast, reliable ASR-GoT integration!**
 
-The ASR-GoT MCP Server is now properly optimized for Claude Desktop integration and should work without any timeout issues.
+The ASR-GoT MCP Server is now properly optimized for Claude Desktop integration and should work without any timeout issues, both during startup and during query processing.

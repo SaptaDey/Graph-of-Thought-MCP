@@ -1,0 +1,35 @@
+
+import logging
+import networkx as nx
+from typing import Dict, Any, List, Optional, Set, Tuple
+import json
+import datetime
+
+from asr_got.models.node import Node
+from asr_got.models.edge import Edge
+from asr_got.models.hyperedge import Hyperedge
+
+logger = logging.getLogger("asr-got-graph")
+
+class ASRGoTGraph:
+    """
+    Core graph data structure for ASR-GoT.
+    Implements the mathematical formalism from P1.11.
+    """
+
+    def __init__(self):
+        # Initialize the main graph structure
+        # Changed from DiGraph to MultiDiGraph to support multiple edges between nodes
+        self.graph = nx.MultiDiGraph()  # Changed from nx.DiGraph()
+
+        # Separate structure for hyperedges
+        self.hyperedges = {}
+
+        # Layer structure (P1.23)
+        self.layers = {}
+
+        # Tracking for Interdisciplinary Bridge Nodes (P1.8)
+        self.ibns = set()
+
+        logger.info("ASR-GoT Graph initialized")
+

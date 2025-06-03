@@ -89,7 +89,8 @@ class MCPTools:
                                 "max_nodes": {"type": "integer", "minimum": 5, "maximum": 50, "default": 20},
                                 "confidence_threshold": {"type": "number", "minimum": 0.0, "maximum": 1.0, "default": 0.7},
                                 "include_reasoning_trace": {"type": "boolean", "default": True},
-                                "include_graph_state": {"type": "boolean", "default": True}
+                                "include_graph_state": {"type": "boolean", "default": True},
+                                "timeout": {"type": "integer", "minimum": 10, "maximum": 300, "default": 60, "description": "Maximum processing time in seconds"}
                             }
                         }
                     },
@@ -279,45 +280,87 @@ class ASRGoTMCPServer:
 
         logger.info(f"Executing ASR-GoT query: {query[:100]}...")
 
+        # Define a timeout for query processing (in seconds)
+        # Default to 60 seconds, but can be overridden by options
+        timeout = options.get("timeout", 60)
+
         try:
-            # Process the query using the ASR-GoT processor
+            # Process the query using the ASR-GoT processor with timeout
             processor = self._get_processor()
-            logger.info(f"Processing query with context: {context}, options: {options}")
-            result = processor.process_query(
-                query=query,
-                context=context,
-                parameters=options
-            )
-            logger.info(f"ASR-GoT result type: {type(result)}, keys: {result.keys() if isinstance(result, dict) else 'not a dict'}")
+            logger.info(f"Processing query with context: {context}, options: {options}, timeout: {timeout}s")
 
-            # Format the response for MCP
-            graph_state = result.get("graph_state", {})
-            formatted_result = {
-                "answer": self._extract_final_answer(result),
-                "reasoning_trace": self._format_reasoning_trace(result.get("reasoning_trace", [])),
-                "confidence_scores": result.get("confidence", [0.0, 0.0, 0.0, 0.0]),
-                "graph_state": graph_state,
-                "session_id": context.get("session_id", "new-session"),
-                "metadata": {
-                    "processing_time": result.get("processing_time"),
-                    "node_count": len(graph_state.get("nodes", [])),
-                    "edge_count": len(graph_state.get("edges", []))
-                }
-            }
+            # Create a future to run the processor in a separate task
+            loop = asyncio.get_event_loop()
 
-            return {
-                "jsonrpc": "2.0",
-                "id": msg_id,
-                "result": {
-                    "content": [
-                        {
-                            "type": "text",
-                            "text": f"**ASR-GoT Analysis Result:**\n\n{formatted_result['answer']}\n\n**Reasoning Trace:**\n{formatted_result['reasoning_trace']}"
-                        }
-                    ],
-                    "isError": False
+            # Define the processing function to run in executor
+            def process_query_task():
+                try:
+                    logger.info("Starting query processing in thread")
+                    result = processor.process_query(
+                        query=query,
+                        context=context,
+                        parameters=options
+                    )
+                    logger.info("Query processing completed in thread")
+                    return result
+                except Exception as e:
+                    logger.error(f"Error in processing thread: {str(e)}")
+                    logger.error(traceback.format_exc())
+                    raise
+
+            # Run the processing in a thread pool with timeout
+            try:
+                logger.info(f"Running query processing with {timeout}s timeout")
+                result = await asyncio.wait_for(
+                    loop.run_in_executor(None, process_query_task),
+                    timeout=timeout
+                )
+                logger.info(f"ASR-GoT result type: {type(result)}, keys: {result.keys() if isinstance(result, dict) else 'not a dict'}")
+
+                # Format the response for MCP
+                graph_state = result.get("graph_state", {})
+                formatted_result = {
+                    "answer": self._extract_final_answer(result),
+                    "reasoning_trace": self._format_reasoning_trace(result.get("reasoning_trace", [])),
+                    "confidence_scores": result.get("confidence", [0.0, 0.0, 0.0, 0.0]),
+                    "graph_state": graph_state,
+                    "session_id": context.get("session_id", "new-session"),
+                    "metadata": {
+                        "processing_time": result.get("processing_time"),
+                        "node_count": len(graph_state.get("nodes", [])),
+                        "edge_count": len(graph_state.get("edges", []))
+                    }
                 }
-            }
+
+                return {
+                    "jsonrpc": "2.0",
+                    "id": msg_id,
+                    "result": {
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": f"**ASR-GoT Analysis Result:**\n\n{formatted_result['answer']}\n\n**Reasoning Trace:**\n{formatted_result['reasoning_trace']}"
+                            }
+                        ],
+                        "isError": False
+                    }
+                }
+
+            except asyncio.TimeoutError:
+                logger.error(f"Query processing timed out after {timeout} seconds")
+                return {
+                    "jsonrpc": "2.0",
+                    "id": msg_id,
+                    "result": {
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": f"Processing timed out after {timeout} seconds. The query is too complex or the system is under heavy load. Please try a simpler query or try again later."
+                            }
+                        ],
+                        "isError": True
+                    }
+                }
 
         except Exception as e:
             logger.error(f"Error processing ASR-GoT query: {str(e)}")
