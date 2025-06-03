@@ -1,470 +1,516 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+"""
+ASR-GoT MCP Server for Claude Desktop Integration
+
+This is a standalone Model Context Protocol (MCP) server that integrates
+the Advanced Scientific Reasoning Graph-of-Thoughts (ASR-GoT) framework
+directly with Claude Desktop.
+
+The server communicates via stdio and implements the MCP specification
+for tools, resources, and prompts.
+"""
+
 import asyncio
 import json
 import logging
 import os
 import sys
 import traceback
-import urllib.request
-import urllib.error
-import urllib.parse
-import requests
-import subprocess
-import time
 from typing import Dict, Any, Optional, List, Union
+from pathlib import Path
 
-# Configure logging to file for debugging
-log_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "logs")
-os.makedirs(log_dir, exist_ok=True)
-log_file = os.path.join(log_dir, "mcp_server.log")
+# Add the src directory to the Python path to import ASR-GoT modules
+current_dir = Path(__file__).parent
+src_dir = current_dir.parent / "src"
+sys.path.insert(0, str(src_dir))
 
-# Configure logging
+# Lazy import ASR-GoT modules to speed up startup
+ASRGoTProcessor = None
+ASRGoTGraph = None
+
+def _import_asr_got():
+    """
+    Performs a lazy import of ASR-GoT modules, assigning them to global variables.
+    
+    Raises:
+        ImportError: If the ASR-GoT modules cannot be imported.
+    """
+    global ASRGoTProcessor, ASRGoTGraph
+    if ASRGoTProcessor is None:
+        try:
+            from asr_got.core import ASRGoTProcessor as _ASRGoTProcessor
+            from asr_got.models.graph import ASRGoTGraph as _ASRGoTGraph
+            ASRGoTProcessor = _ASRGoTProcessor
+            ASRGoTGraph = _ASRGoTGraph
+        except ImportError as e:
+            logger.error(f"Error importing ASR-GoT modules: {e}")
+            raise
+
+# Configure logging for faster startup (stderr only initially)
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
     handlers=[
-        logging.FileHandler(log_file),
-        logging.StreamHandler(sys.stderr)  # Log to stderr for Claude to capture
+        logging.StreamHandler(sys.stderr)
     ],
 )
 logger = logging.getLogger("asr-got-mcp-server")
 
-# ASR-GoT API settings
-ASR_GOT_API_URL = "http://localhost:8082/api/v1/claude/query"
-
 # MCP Protocol constants
 MCP_VERSION = "2024-11-05"
+SERVER_NAME = "asr-got"
+SERVER_VERSION = "1.0.0"
 
-def check_asr_got_running() -> bool:
-    """Check if ASR-GoT server is running."""
-    try:
-        # Use a shorter timeout for faster checks
-        response = requests.get("http://localhost:8082/health", timeout=1)
-        return response.status_code == 200
-    except:
-        return False
+class MCPTools:
+    """Define MCP tools for ASR-GoT functionality."""
 
-def start_docker_containers() -> Optional[subprocess.Popen]:
-    """Start ASR-GoT Docker containers."""
-    try:
-        # Get the project directory
-        project_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        logger.info(f"Project directory: {project_dir}")
+    @staticmethod
+    def get_tools() -> List[Dict[str, Any]]:
+        """
+        Returns the list of available MCP tools supported by the server.
         
-        # Check if containers are already running
-        if check_asr_got_running():
-            logger.info("ASR-GoT server is already running")
-            return None
-        
-        # Start containers in detached mode
-        logger.info("Starting ASR-GoT Docker containers...")
-        
-        # Use subprocess with full paths to avoid issues
-        process = subprocess.Popen(
-            ["docker-compose", "up", "--detach"],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-            shell=True,
-            cwd=project_dir
-        )
-        
-        # Reduced wait timeout to prevent blocking for too long
-        max_attempts = 2  # Reduced from 3
-        attempts = 0
-        while attempts < max_attempts:
-            logger.info(f"Waiting for ASR-GoT server to start (attempt {attempts+1}/{max_attempts})...")
-            time.sleep(0.5)  # Reduced from 1 second
-            if check_asr_got_running():
-                logger.info("ASR-GoT server is now running!")
-                return process
-            attempts += 1
-        
-        # Return process even if server isn't ready yet
-        # We'll deal with API calls separately
-        logger.warning("ASR-GoT server not yet ready, but returning control to MCP server")
-        return process
-    except Exception as e:
-        logger.error(f"Error starting Docker containers: {str(e)}")
-        logger.error(traceback.format_exc())
-        return None
+        Each tool is described with its name, purpose, and input schema, including
+        required and optional parameters for tool invocation.
+        """
+        return [
+            {
+                "name": "asr_got_query",
+                "description": "Process a query using the Advanced Scientific Reasoning Graph-of-Thoughts framework",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "query": {
+                            "type": "string",
+                            "description": "The question or problem to analyze using ASR-GoT"
+                        },
+                        "context": {
+                            "type": "object",
+                            "description": "Additional context for the query",
+                            "properties": {
+                                "domain": {"type": "string", "description": "Scientific domain or field"},
+                                "complexity": {"type": "string", "enum": ["low", "medium", "high"], "description": "Expected complexity level"},
+                                "session_id": {"type": "string", "description": "Session ID for continuing previous reasoning"}
+                            }
+                        },
+                        "options": {
+                            "type": "object",
+                            "description": "Processing options",
+                            "properties": {
+                                "max_nodes": {"type": "integer", "minimum": 5, "maximum": 50, "default": 20},
+                                "confidence_threshold": {"type": "number", "minimum": 0.0, "maximum": 1.0, "default": 0.7},
+                                "include_reasoning_trace": {"type": "boolean", "default": True},
+                                "include_graph_state": {"type": "boolean", "default": True}
+                            }
+                        }
+                    },
+                    "required": ["query"]
+                }
+            },
+            {
+                "name": "get_graph_state",
+                "description": "Retrieve the current state of a reasoning graph",
+                "inputSchema": {
+                    "type": "object",
+                    "properties": {
+                        "session_id": {
+                            "type": "string",
+                            "description": "Session ID of the graph to retrieve"
+                        }
+                    },
+                    "required": ["session_id"]
+                }
+            }
+        ]
 
 class ASRGoTMCPServer:
     """
     Model Context Protocol server for ASR-GoT application.
-    Handles MCP protocol communication with Claude and forwards requests to ASR-GoT API.
+    Handles MCP protocol communication with Claude Desktop and processes
+    queries directly using the embedded ASR-GoT engine.
     """
-    
+
     def __init__(self):
+        """
+        Initializes the ASR-GoT MCP server instance.
+        
+        Sets up the server state, including initialization flag, tool definitions, and prepares for lazy processor loading. Logs server startup and prints readiness to standard error.
+        """
         self.initialized = False
-        self.request_id_counter = 0
-        self.session_id = None
-        self.docker_process = None
-        self.docker_initializing = False
-        
+        self.processor = None  # Initialize lazily
+        self.tools = MCPTools()
+
         # Log that we're starting the server
-        print("ASR-GoT MCP Server started", file=sys.stderr)  # Explicit stderr output for Claude to capture
         logger.info("ASR-GoT MCP Server started")
-    
-    async def _initialize_docker_async(self):
+        print("ASR-GoT MCP Server ready", file=sys.stderr)
+
+    def _get_processor(self):
         """
-        Initialize Docker containers asynchronously to avoid blocking the initialize response.
-        """
-        self.docker_initializing = True
-        logger.info("Starting Docker containers asynchronously...")
+        Returns the ASR-GoT processor instance, initializing it on first access.
         
-        try:
-            # Check if ASR-GoT server is already running
-            if check_asr_got_running():
-                logger.info("ASR-GoT server is already running")
-                self.docker_initializing = False
-                return
-                
-            # Start Docker containers if not already running
-            # Run in a separate thread to avoid blocking the event loop
-            loop = asyncio.get_event_loop()
-            await loop.run_in_executor(None, lambda: self._start_docker_containers_safely())
-            
-            logger.info("Docker container initialization complete")
-        except Exception as e:
-            logger.error(f"Error during Docker initialization: {str(e)}")
-            logger.error(traceback.format_exc())
-        finally:
-            self.docker_initializing = False
-            
-    def _start_docker_containers_safely(self):
+        If the processor has not been created yet, this method performs a lazy import
+        of the required ASR-GoT modules and instantiates the processor before returning it.
         """
-        Start Docker containers in a separate thread.
-        This prevents blocking the asyncio event loop.
-        """
-        try:
-            logger.info("Starting Docker containers in separate thread...")
-            self.docker_process = start_docker_containers()
-            return self.docker_process
-        except Exception as e:
-            logger.error(f"Error in _start_docker_containers_safely: {str(e)}")
-            logger.error(traceback.format_exc())
-            return None
-    
+        if self.processor is None:
+            logger.info("LAZY LOADING: Initializing ASR-GoT processor now...")
+            import traceback
+            logger.info(f"LAZY LOADING: Called from: {traceback.format_stack()}")
+            _import_asr_got()  # Lazy import when actually needed
+            self.processor = ASRGoTProcessor()
+            logger.info("LAZY LOADING: ASR-GoT processor initialized successfully")
+        return self.processor
+
     async def process_message(self, message: Dict[str, Any]) -> Optional[Dict[str, Any]]:
         """
-        Process an incoming MCP message and generate a response.
+        Handles an incoming MCP protocol message and dispatches it to the appropriate handler.
+        
+        Depending on the message's `method`, this function processes initialization, shutdown, tool listing, tool invocation, or notification messages. Returns a response dictionary for requests that require a reply, or None for notifications. If the message format is invalid or an error occurs, returns an MCP-compliant error response.
         """
         try:
             if not isinstance(message, dict):
                 logger.error(f"Invalid message format: {message}")
                 return self._create_error_response(-32700, "Parse error", 0)
-            
+
             method = message.get("method")
             params = message.get("params", {})
             msg_id = message.get("id")
-            
+
             logger.info(f"Received message with method: {method}, id: {msg_id}")
-            
+
             if method == "initialize":
                 return await self._handle_initialize(params, msg_id)
             elif method == "shutdown":
                 return await self._handle_shutdown(params, msg_id)
-            elif method == "asr_got.query":
-                return await self._handle_asr_got_query(params, msg_id)
+            elif method == "tools/list":
+                return await self._handle_tools_list(params, msg_id)
+            elif method == "tools/call":
+                return await self._handle_tools_call(params, msg_id)
             elif method == "notifications/cancelled":
                 # Just acknowledge this notification
                 logger.info(f"Received cancellation notification: {params}")
                 return None
+            elif method == "notifications/initialized":
+                # Handle initialized notification
+                logger.info("Received initialized notification")
+                return None
             else:
                 logger.warning(f"Unknown method: {method}")
                 return self._create_error_response(-32601, f"Method not found: {method}", msg_id)
-                
+
         except Exception as e:
             logger.error(f"Error processing message: {str(e)}")
             logger.error(traceback.format_exc())
             return self._create_error_response(-32603, f"Internal error: {str(e)}", msg_id if 'msg_id' in locals() else 0)
-    
+
     async def _handle_initialize(self, params: Dict[str, Any], msg_id: Union[int, str]) -> Dict[str, Any]:
         """
-        Handle initialize request from Claude.
+        Handles the MCP initialize request from the client.
+        
+        Sets protocol and client information, marks the server as initialized, and returns a response indicating supported capabilities and server details.
         """
-        logger.info(f"Handling initialize request: {params}")
+        logger.info(f"Handling initialize request from client: {params.get('clientInfo', {}).get('name', 'unknown')}")
         self.protocol_version = params.get("protocolVersion")
         self.client_info = params.get("clientInfo", {})
-        
-        # Start ASR-GoT Docker async without waiting for completion
-        # Use create_task to avoid blocking but don't await it
-        asyncio.create_task(self._initialize_docker_async())
-        
-        # Mark as initialized immediately - we'll handle Docker availability checks in the query handler
+
+        # Mark as initialized immediately for fast response
         self.initialized = True
-        
-        # Return success immediately, don't wait for Docker to start
-        logger.info("Returning initialize response")
-        return {
+
+        logger.info("Returning initialize response immediately")
+
+        # Return response immediately without any heavy operations
+        response = {
             "jsonrpc": "2.0",
             "id": msg_id,
             "result": {
-                "name": "ASR-GoT",
-                "version": "0.1.0",
-                "vendor": "Anthropic",
+                "protocolVersion": MCP_VERSION,
                 "capabilities": {
-                    "asr_got.query": {
-                        "description": "Use ASR-GoT to solve complex reasoning problems"
-                    }
+                    "tools": {
+                        "listChanged": True
+                    },
+                    "resources": {},
+                    "prompts": {}
                 },
-                "status": "ready",  # Always return "ready" to avoid timeout issues
-                "display": {
-                    "name": "ASR-GoT",
-                    "description": "ASR-GoT is an Anthropic Research Graph-of-Thought reasoner."
+                "serverInfo": {
+                    "name": SERVER_NAME,
+                    "version": SERVER_VERSION
                 }
             }
         }
-    
+
+        logger.info("Initialize response ready")
+        return response
+
     async def _handle_shutdown(self, params: Dict[str, Any], msg_id: Union[int, str]) -> Dict[str, Any]:
         """
-        Handle shutdown request from Claude.
+        Handles a shutdown request by marking the server as uninitialized and returning a response indicating successful shutdown.
         """
         logger.info("Handling shutdown request")
         self.initialized = False
-        
-        # Stop Docker containers if we started them
-        if self.docker_process is not None:
-            logger.info("Stopping ASR-GoT Docker containers...")
-            try:
-                project_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-                subprocess.run(
-                    ["docker-compose", "down"],
-                    cwd=project_dir,
-                    check=True,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    shell=True
-                )
-                logger.info("ASR-GoT Docker containers stopped")
-            except Exception as e:
-                logger.error(f"Error stopping Docker containers: {str(e)}")
-        
+
         return {
             "jsonrpc": "2.0",
             "id": msg_id,
             "result": None
         }
-    
-    async def _handle_asr_got_query(self, params: Dict[str, Any], msg_id: Union[int, str]) -> Dict[str, Any]:
+
+    async def _handle_tools_list(self, params: Dict[str, Any], msg_id: Union[int, str]) -> Dict[str, Any]:
         """
-        Handle ASR-GoT query request from Claude.
+        Handles the MCP tools/list request by returning the list of available tools.
+        
+        Args:
+            params: The parameters of the tools/list request.
+            msg_id: The unique identifier for the MCP message.
+        
+        Returns:
+            A dictionary containing the MCP response with the list of supported tools.
+        """
+        logger.info("Handling tools/list request")
+
+        return {
+            "jsonrpc": "2.0",
+            "id": msg_id,
+            "result": {
+                "tools": self.tools.get_tools()
+            }
+        }
+
+    async def _handle_tools_call(self, params: Dict[str, Any], msg_id: Union[int, str]) -> Dict[str, Any]:
+        """
+        Handles a tools/call MCP request by dispatching to the appropriate ASR-GoT tool.
+        
+        If the server is not initialized, returns an error response. Dispatches the call to either the ASR-GoT query processor or the graph state retriever based on the requested tool name. Returns an error response for unknown tools or if an exception occurs during execution.
         """
         if not self.initialized:
             return self._create_error_response(-32002, "Server not initialized", msg_id)
-        
-        logger.info(f"Handling ASR-GoT query: {params}")
-        
-        context = params.get("context", {})
-        if not context:
-            return self._create_error_response(-32602, "Missing context parameter", msg_id)
-        
-        query = context.get("query")
-        if not query:
-            return self._create_error_response(-32602, "Missing query in context", msg_id)
-        
-        session_id = context.get("session_id")
-        parameters = context.get("parameters", {})
-        
-        # Return a quick test response without waiting for Docker - this helps debug timeout issues
-        if query.lower().strip() == "test":
-            return {
-                "jsonrpc": "2.0",
-                "id": msg_id,
-                "result": {
-                    "response": "This is a test response. ASR-GoT MCP server is functioning correctly.",
-                    "reasoningTrace": "Test reasoning trace.",
-                    "confidence": [0.9, 0.9, 0.9, 0.9],
-                    "graphState": {},
-                    "sessionId": self.session_id or "test-session"
-                }
-            }
-        
-        # Check if this is a "continue" request, which should be handled quickly
-        if query.lower().strip() == "continue" or query.lower().strip() == "continue to iterate?":
-            return {
-                "jsonrpc": "2.0",
-                "id": msg_id,
-                "result": {
-                    "response": "Yes, continuing with the current ASR-GoT graph. Please provide your next query or say 'continue' to iterate further.",
-                    "reasoningTrace": "Continuing with existing graph...",
-                    "confidence": [0.9, 0.9, 0.9, 0.9] if self.session_id else [0.0, 0.0, 0.0, 0.0],
-                    "graphState": {},
-                    "sessionId": self.session_id or "continue-session"
-                }
-            }
-        
-        # If Docker is still initializing, return a quick response to avoid timeout
-        if self.docker_initializing:
-            logger.info("Docker still initializing, sending temporary response to avoid timeout")
-            return {
-                "jsonrpc": "2.0",
-                "id": msg_id,
-                "result": {
-                    "response": "The ASR-GoT server is still initializing. Please try again in a few moments. You can type 'test' to check if the server is ready.",
-                    "reasoningTrace": "Server initializing...",
-                    "confidence": [0.0, 0.0, 0.0, 0.0],
-                    "graphState": {},
-                    "sessionId": self.session_id or "init-session"
-                }
-            }
-        
-        # Check if ASR-GoT server is running with faster retries
-        max_retries = 2
-        retry_delay = 0.3
-        server_ready = False
-        
-        # Try a few quick retries to see if server just started
-        for i in range(max_retries):
-            if check_asr_got_running():
-                server_ready = True
-                break
-                
-            logger.info(f"ASR-GoT server not responding, retry {i+1}/{max_retries}...")
-            await asyncio.sleep(retry_delay)
-        
-        if not server_ready:
-            # If Docker is not running, start it but return quickly to avoid timeout
-            if not self.docker_initializing:
-                logger.warning("ASR-GoT server not running, attempting to start it...")
-                asyncio.create_task(self._initialize_docker_async())
-            
-            # Return a message to the user rather than an error, to avoid disconnection
-            return {
-                "jsonrpc": "2.0",
-                "id": msg_id,
-                "result": {
-                    "response": "The ASR-GoT server is starting up. Please try again in a few moments by typing 'test' to check status.",
-                    "reasoningTrace": "Server starting...",
-                    "confidence": [0.0, 0.0, 0.0, 0.0],
-                    "graphState": {},
-                    "sessionId": self.session_id or "starting-session"
-                }
-            }
-        
-        # Forward query to ASR-GoT API
+
+        tool_name = params.get("name")
+        arguments = params.get("arguments", {})
+
+        logger.info(f"Handling tools/call request for tool: {tool_name}")
+
         try:
-            # Prepare request
-            request_data = {
-                "query": query,
-                "process_response": True
+            if tool_name == "asr_got_query":
+                return await self._execute_asr_got_query(arguments, msg_id)
+            elif tool_name == "get_graph_state":
+                return await self._execute_get_graph_state(arguments, msg_id)
+            else:
+                return self._create_error_response(-32601, f"Unknown tool: {tool_name}", msg_id)
+        except Exception as e:
+            logger.error(f"Error executing tool {tool_name}: {str(e)}")
+            logger.error(traceback.format_exc())
+            return self._create_error_response(-32603, f"Tool execution error: {str(e)}", msg_id)
+
+    async def _execute_asr_got_query(self, arguments: Dict[str, Any], msg_id: Union[int, str]) -> Dict[str, Any]:
+        """
+        Executes an ASR-GoT query using the provided arguments and returns the analysis result.
+        
+        Processes a scientific reasoning query through the ASR-GoT engine, incorporating optional context and parameters. Returns a structured MCP response containing the final answer, formatted reasoning trace, confidence scores, graph state, session ID, and relevant metadata. If the required query argument is missing or an error occurs during processing, returns an MCP-compliant error response.
+        """
+        query = arguments.get("query")
+        if not query:
+            return self._create_error_response(-32602, "Missing required argument: query", msg_id)
+
+        context = arguments.get("context", {})
+        options = arguments.get("options", {})
+
+        logger.info(f"Executing ASR-GoT query: {query[:100]}...")
+
+        try:
+            # Process the query using the ASR-GoT processor
+            processor = self._get_processor()
+            logger.info(f"Processing query with context: {context}, options: {options}")
+            result = processor.process_query(
+                query=query,
+                context=context,
+                parameters=options
+            )
+            logger.info(f"ASR-GoT result type: {type(result)}, keys: {result.keys() if isinstance(result, dict) else 'not a dict'}")
+
+            # Format the response for MCP
+            graph_state = result.get("graph_state", {})
+            formatted_result = {
+                "answer": self._extract_final_answer(result),
+                "reasoning_trace": self._format_reasoning_trace(result.get("reasoning_trace", [])),
+                "confidence_scores": result.get("confidence", [0.0, 0.0, 0.0, 0.0]),
+                "graph_state": graph_state,
+                "session_id": context.get("session_id", "new-session"),
+                "metadata": {
+                    "processing_time": result.get("processing_time"),
+                    "node_count": len(graph_state.get("nodes", [])),
+                    "edge_count": len(graph_state.get("edges", []))
+                }
             }
-            
-            if session_id:
-                request_data["session_id"] = session_id
-            
-            if parameters:
-                request_data["parameters"] = parameters
-            
-            logger.info(f"Sending request to ASR-GoT API: {request_data}")
-            
-            # Make request to ASR-GoT API with reduced timeout to prevent MCP timeout
-            try:
-                # Use an even shorter timeout for Windows - 30 seconds is safer for MCP
-                response = requests.post(
-                    ASR_GOT_API_URL,
-                    json=request_data,
-                    headers={"Content-Type": "application/json"},
-                    timeout=30  # Reduced timeout for Windows platform
-                )
-                
-                # Check for errors
-                response.raise_for_status()
-                
-                # Parse response
-                asr_got_response = response.json()
-                logger.info("Received response from ASR-GoT API")
-                
-                # Extract Claude's response
-                claude_response = None
-                if "choices" in asr_got_response and asr_got_response["choices"] and "message" in asr_got_response["choices"][0]:
-                    claude_response = asr_got_response["choices"][0]["message"].get("content", "")
-                
-                # Extract ASR-GoT result
-                asr_got_result = asr_got_response.get("asr_got_result", {})
-                
-                # Check for a session ID
-                if "session_id" in asr_got_response:
-                    self.session_id = asr_got_response["session_id"]
-                
-                # Construct MCP response
-                result = {
-                    "response": claude_response or "No response from ASR-GoT model.",
-                    "reasoningTrace": self._extract_reasoning_trace(asr_got_result),
-                    "confidence": self._extract_confidence(asr_got_result),
-                    "graphState": asr_got_result.get("graph_state", {}),
-                    "sessionId": self.session_id
+
+            return {
+                "jsonrpc": "2.0",
+                "id": msg_id,
+                "result": {
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": f"**ASR-GoT Analysis Result:**\n\n{formatted_result['answer']}\n\n**Reasoning Trace:**\n{formatted_result['reasoning_trace']}"
+                        }
+                    ],
+                    "isError": False
                 }
-                
-                logger.info("Returning formatted response to Claude")
-                
-                return {
-                    "jsonrpc": "2.0",
-                    "id": msg_id,
-                    "result": result
+            }
+
+        except Exception as e:
+            logger.error(f"Error processing ASR-GoT query: {str(e)}")
+            logger.error(traceback.format_exc())
+            return {
+                "jsonrpc": "2.0",
+                "id": msg_id,
+                "result": {
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": f"Error processing query: {str(e)}"
+                        }
+                    ],
+                    "isError": True
                 }
-            except requests.exceptions.Timeout:
-                logger.error("Timeout while querying ASR-GoT API")
-                # Return a graceful response instead of an error
+            }
+
+    async def _execute_get_graph_state(self, arguments: Dict[str, Any], msg_id: Union[int, str]) -> Dict[str, Any]:
+        """
+        Retrieves and summarizes the current state of the reasoning graph for a given session.
+        
+        If a graph exists for the specified session ID, returns a summary including node, edge, and layer counts, along with details of the most recent nodes. If no graph is found, returns a message indicating its absence. On error, returns an error message in the response.
+        
+        Args:
+            arguments: Dictionary containing the required "session_id" key.
+            msg_id: The MCP message ID for correlating the response.
+        
+        Returns:
+            An MCP-compliant response dictionary containing a textual summary of the graph state or an error message.
+        """
+        session_id = arguments.get("session_id")
+        if not session_id:
+            return self._create_error_response(-32602, "Missing required argument: session_id", msg_id)
+
+        try:
+            # Get graph state from processor
+            processor = self._get_processor()
+            graph_state = processor.get_graph_state(session_id)
+
+            if graph_state is None:
                 return {
                     "jsonrpc": "2.0",
                     "id": msg_id,
                     "result": {
-                        "response": "The ASR-GoT server took too long to respond. Please try a simpler query or try again later. For complex problems, you can try sending 'continue' to continue working with the current graph.",
-                        "reasoningTrace": "Query processing timed out. This is often a sign that the problem is too complex or the system is under heavy load.",
-                        "confidence": [0.0, 0.0, 0.0, 0.0],
-                        "graphState": {},
-                        "sessionId": self.session_id or "timeout-session"
+                        "content": [
+                            {
+                                "type": "text",
+                                "text": f"No graph found for session ID: {session_id}"
+                            }
+                        ],
+                        "isError": False
                     }
                 }
-        except Exception as e:
-            logger.error(f"Error querying ASR-GoT API: {str(e)}")
-            logger.error(traceback.format_exc())
-            # Return a graceful response instead of an error
+
+            # Format graph state for display
+            node_count = len(graph_state.get("nodes", []))
+            edge_count = len(graph_state.get("edges", []))
+            layer_count = len(graph_state.get("layers", {}))
+
+            graph_summary = f"**Graph State for Session {session_id}:**\n\n"
+            graph_summary += f"- Nodes: {node_count}\n"
+            graph_summary += f"- Edges: {edge_count}\n"
+            graph_summary += f"- Layers: {layer_count}\n\n"
+
+            if graph_state.get("nodes"):
+                graph_summary += "**Recent Nodes:**\n"
+                for node in graph_state["nodes"][-5:]:  # Show last 5 nodes
+                    graph_summary += f"- {node.get('label', 'Unknown')}: {node.get('node_type', 'unknown')}\n"
+
             return {
                 "jsonrpc": "2.0",
                 "id": msg_id,
                 "result": {
-                    "response": f"There was an error communicating with the ASR-GoT server: {str(e)}. Please try again later or type 'test' to check the server status.",
-                    "reasoningTrace": "Error in ASR-GoT communication.",
-                    "confidence": [0.0, 0.0, 0.0, 0.0],
-                    "graphState": {},
-                    "sessionId": self.session_id or "error-session"
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": graph_summary
+                        }
+                    ],
+                    "isError": False
                 }
             }
-    
-    def _extract_reasoning_trace(self, asr_got_result: Dict[str, Any]) -> str:
+
+        except Exception as e:
+            logger.error(f"Error getting graph state: {str(e)}")
+            return {
+                "jsonrpc": "2.0",
+                "id": msg_id,
+                "result": {
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": f"Error retrieving graph state: {str(e)}"
+                        }
+                    ],
+                    "isError": True
+                }
+            }
+
+    def _extract_final_answer(self, result: Dict[str, Any]) -> str:
         """
-        Extract and format reasoning trace from ASR-GoT result.
+        Extracts the final answer string from an ASR-GoT result dictionary.
+        
+        If a "final_answer" is present in the result, returns it. Otherwise, summarizes the last stage of the reasoning trace if available, or returns a default completion message if not.
         """
-        if not asr_got_result or "reasoning_trace" not in asr_got_result:
+        # The ASR-GoT processor returns a dict with "result", "reasoning_trace", "confidence", "graph_state"
+        if isinstance(result, dict):
+            # Try to get a final answer from the composition result
+            composition_result = result.get("result", {})
+            if isinstance(composition_result, dict):
+                final_answer = composition_result.get("final_answer")
+                if final_answer:
+                    return final_answer
+
+            # If no final answer, create a summary from the reasoning trace
+            reasoning_trace = result.get("reasoning_trace", [])
+            if reasoning_trace:
+                last_stage = reasoning_trace[-1] if reasoning_trace else {}
+                summary = last_stage.get("summary", "Processing completed through ASR-GoT reasoning pipeline.")
+                return f"ASR-GoT Analysis Complete: {summary}"
+
+            return "ASR-GoT processing completed successfully."
+
+        return "Processing completed, but result format was unexpected."
+
+    def _format_reasoning_trace(self, trace: List[Dict[str, Any]]) -> str:
+        """
+        Formats a reasoning trace into a readable string for display.
+        
+        Each stage in the trace is presented with its stage number, name, and summary. Returns a default message if the trace is empty.
+        """
+        if not trace:
             return "No reasoning trace available."
-        
-        trace = asr_got_result["reasoning_trace"]
-        formatted_trace = []
-        
+
+        formatted_lines = []
         for stage in trace:
+            stage_num = stage.get("stage", "?")
             stage_name = stage.get("name", "Unknown Stage")
-            stage_number = stage.get("stage", "?")
             summary = stage.get("summary", "No summary available.")
-            
-            formatted_trace.append(f"Stage {stage_number}: {stage_name}\n{summary}\n")
-        
-        return "\n".join(formatted_trace)
-    
-    def _extract_confidence(self, asr_got_result: Dict[str, Any]) -> List[float]:
-        """
-        Extract confidence scores from ASR-GoT result.
-        """
-        if not asr_got_result or "confidence" not in asr_got_result:
-            return [0.0, 0.0, 0.0, 0.0]
-        
-        return asr_got_result["confidence"]
-    
+
+            formatted_lines.append(f"**Stage {stage_num}: {stage_name}**")
+            formatted_lines.append(summary)
+            formatted_lines.append("")  # Empty line for spacing
+
+        return "\n".join(formatted_lines)
+
     def _create_error_response(self, code: int, message: str, msg_id: Union[int, str]) -> Dict[str, Any]:
         """
-        Create an error response according to MCP protocol.
+        Constructs an MCP-compliant error response message.
+        
+        Args:
+            code: The MCP error code.
+            message: The error message to include in the response.
+            msg_id: The ID of the message that triggered the error.
+        
+        Returns:
+            A dictionary representing the MCP error response.
         """
         logger.error(f"Creating error response: {code} - {message}")
         return {
@@ -477,11 +523,15 @@ class ASRGoTMCPServer:
         }
 
 async def read_message(reader: asyncio.StreamReader) -> Optional[Dict[str, Any]]:
-    """Read and parse an LSP message from the stream."""
+    """
+    Asynchronously reads and parses a Language Server Protocol (LSP) message from a stream reader.
+    
+    Reads headers to determine the content length, then reads and decodes the message body as JSON. Returns the parsed message as a dictionary, or None if parsing fails or the Content-Length header is missing.
+    """
     # Read the header
     header = b""
     content_length = None
-    
+
     while True:
         line = await reader.readline()
         if not line or line == b"\r\n":
@@ -490,14 +540,14 @@ async def read_message(reader: asyncio.StreamReader) -> Optional[Dict[str, Any]]
         header_line = line.decode("utf-8").strip()
         if header_line.startswith("Content-Length: "):
             content_length = int(header_line[16:])
-    
+
     if content_length is None:
         logger.error("No Content-Length header found")
         return None
-    
+
     # Read the content
     content = await reader.readexactly(content_length)
-    
+
     try:
         return json.loads(content.decode("utf-8"))
     except json.JSONDecodeError as e:
@@ -505,135 +555,126 @@ async def read_message(reader: asyncio.StreamReader) -> Optional[Dict[str, Any]]
         return None
 
 async def write_message(writer: asyncio.StreamWriter, message: Dict[str, Any]) -> None:
-    """Write an LSP message to the stream."""
+    """
+    Asynchronously writes a JSON-RPC (LSP) message to the provided stream writer.
+    
+    The message is serialized to JSON, framed with a Content-Length header, and sent over the stream.
+    """
     content = json.dumps(message)
     content_bytes = content.encode("utf-8")
     header = f"Content-Length: {len(content_bytes)}\r\n\r\n"
     header_bytes = header.encode("utf-8")
-    
+
     writer.write(header_bytes + content_bytes)
     await writer.drain()
 
 def main():
     """
-    Main function to run the ASR-GoT MCP server.
+    Runs the ASR-GoT MCP server main loop, processing MCP messages from stdin and writing responses to stdout.
+    
+    Returns:
+        int: Exit code 0 on normal exit, 1 on unexpected errors.
     """
     try:
-        logger.info("ASR-GoT MCP Server ready to receive messages")
-        print("ASR-GoT MCP Server ready to receive messages", file=sys.stderr)  # For Claude to see
         server = ASRGoTMCPServer()
-        
-        # Use a different approach for Windows to avoid pipe issues
-        if sys.platform == 'win32':
-            # Read and process messages directly without using pipes
-            while True:
-                message = None
-                try:
-                    # Read a line from stdin that has the content length
-                    header_line = sys.stdin.readline().strip()
-                    
-                    if not header_line:
-                        logger.warning("Empty header received, continuing...")
-                        continue
-                        
-                    if not header_line.startswith("Content-Length: "):
-                        logger.warning(f"Invalid header received: {header_line}, continuing...")
-                        # Skip until we find a blank line
-                        while sys.stdin.readline().strip():
-                            pass
-                        continue
-                    
-                    content_length = int(header_line[16:])
-                    
-                    # Skip headers until we find a blank line
-                    while sys.stdin.readline().strip():
-                        pass
-                    
-                    # Read the content
-                    content = sys.stdin.read(content_length)
-                    message = json.loads(content)
-                    
-                    # Process the message
-                    response = asyncio.run(server.process_message(message))
-                    
-                    # Send the response if any
-                    if response:
-                        response_content = json.dumps(response)
-                        response_bytes = response_content.encode('utf-8')
-                        header = f"Content-Length: {len(response_bytes)}\r\n\r\n"
-                        sys.stdout.write(header)
-                        sys.stdout.write(response_content)
-                        sys.stdout.flush()
-                        logger.info(f"Sent response for method: {message.get('method')}")
-                    
-                    # Exit on shutdown
-                    if message and message.get("method") == "shutdown":
-                        logger.info("Shutdown requested, exiting")
-                        break
-                
-                except (EOFError, KeyboardInterrupt):
-                    logger.info("Input stream closed, exiting")
-                    break
-                except json.JSONDecodeError as e:
-                    logger.error(f"Failed to parse JSON message: {e}")
-                    continue
-                except Exception as e:
-                    logger.error(f"Error processing message: {e}")
-                    logger.error(traceback.format_exc())
-                    # Try to send an error response if we had a valid message id
-                    if message and "id" in message:
-                        error_response = server._create_error_response(-32603, f"Internal error: {str(e)}", message["id"])
-                        response_content = json.dumps(error_response)
-                        response_bytes = response_content.encode('utf-8')
-                        header = f"Content-Length: {len(response_bytes)}\r\n\r\n"
-                        sys.stdout.write(header)
-                        sys.stdout.write(response_content)
-                        sys.stdout.flush()
-        else:
-            # Non-Windows platforms can use the asyncio pipe approach
-            loop = asyncio.get_event_loop()
-            
-            # Create stream reader and writer for stdin/stdout
-            reader = asyncio.StreamReader()
-            protocol = asyncio.StreamReaderProtocol(reader)
-            asyncio.run(loop.connect_read_pipe(lambda: protocol, sys.stdin))
-            
-            writer_transport, _ = asyncio.run(loop.connect_write_pipe(
-                asyncio.streams.FlowControlMixin, sys.stdout
-            ))
-            writer = asyncio.StreamWriter(writer_transport, None, reader, loop)
-            
-            # Main message processing loop
-            while True:
-                # Read and process incoming message
-                message = asyncio.run(read_message(reader))
+
+        # Main message processing loop using stdio
+        while True:
+            try:
+                # Read message from stdin
+                message = read_message_sync()
                 if message is None:
-                    logger.error("Failed to read message, exiting")
+                    logger.info("No more messages, exiting")
                     break
-                
-                logger.info(f"Received message: {message.get('method')}")
-                
+
                 # Process the message
                 response = asyncio.run(server.process_message(message))
-                
+
                 # Send the response if any
                 if response:
-                    asyncio.run(write_message(writer, response))
-                    logger.info(f"Sent response for method: {message.get('method')}")
-                
+                    write_message_sync(response)
+
                 # Exit on shutdown
                 if message.get("method") == "shutdown":
                     logger.info("Shutdown requested, exiting")
                     break
-                
-    except asyncio.CancelledError:
-        logger.info("Server task cancelled")
+
+            except (EOFError, KeyboardInterrupt):
+                logger.info("Input stream closed, exiting")
+                break
+            except Exception as e:
+                logger.error(f"Error processing message: {e}")
+                logger.error(traceback.format_exc())
+
     except Exception as e:
         logger.error(f"Unexpected error: {str(e)}")
         logger.error(traceback.format_exc())
         return 1
-    
+
     return 0
+
+def read_message_sync() -> Optional[Dict[str, Any]]:
+    """
+    Reads and parses a single MCP message from standard input synchronously.
+    
+    Returns:
+        The parsed message as a dictionary if successful, or None if input is incomplete,
+        malformed, or an error occurs.
+    """
+    try:
+        # Read headers
+        content_length = None
+        while True:
+            line = sys.stdin.readline()
+            if not line:
+                return None
+
+            line = line.strip()
+            if not line:
+                break
+
+            if line.startswith("Content-Length: "):
+                content_length = int(line[16:])
+
+        if content_length is None:
+            logger.error("No Content-Length header found")
+            return None
+
+        # Read content
+        content = sys.stdin.read(content_length)
+        if not content:
+            return None
+
+        message = json.loads(content)
+        logger.info(f"Received message: {message.get('method', 'unknown')}")
+        return message
+
+    except json.JSONDecodeError as e:
+        logger.error(f"Failed to parse JSON message: {e}")
+        return None
+    except Exception as e:
+        logger.error(f"Error reading message: {e}")
+        return None
+
+def write_message_sync(message: Dict[str, Any]) -> None:
+    """
+    Serializes and writes a JSON message to stdout using the LSP Content-Length protocol.
+    
+    The message is encoded as UTF-8 and immediately flushed to ensure delivery.
+    """
+    try:
+        content = json.dumps(message)
+        content_bytes = content.encode("utf-8")
+        header = f"Content-Length: {len(content_bytes)}\r\n\r\n"
+
+        sys.stdout.write(header)
+        sys.stdout.write(content)
+        sys.stdout.flush()
+
+        logger.info(f"Sent response for method: {message.get('result', {}).get('method', 'unknown')}")
+
+    except Exception as e:
+        logger.error(f"Error writing message: {e}")
 
 if __name__ == "__main__":
     try:
