@@ -29,10 +29,10 @@ asr-got-mcp/
 │   │   ├── utils/                             # Utility functions
 │   │   └── models/                            # Data models
 │   └── api/                                   # API implementation
-│       ├── routes.py         # API routes
-│       └── schema.py         # API schemas
-├── config/                   # Configuration files
-└── tests/                    # Test suite
+│       ├── routes.py                          # API routes
+│       └── schema.py                          # API schemas
+├── config/                                    # Configuration files
+└── tests/                                     # Test suite
 ```
 
 ## Running the Project with Docker
