@@ -10,14 +10,14 @@ This project implements a Model Context Protocol (MCP) server architecture that 
 
 ```
 asr-got-mcp/
-├── docker-compose.yml        # Docker Compose configuration for multi-container setup
-├── Dockerfile                # Docker configuration for the backend
-├── requirements.txt          # Python dependencies
-├── src/                      # Source code
-│   ├── server.py             # Main server implementation
-│   ├── asr_got/              # Core ASR-GoT implementation
-│   │   ├── core.py           # Core functionality
-│   │   ├── stages/           # Processing stages
+├── docker-compose.yml                          # Docker Compose configuration for multi-container setup
+├── Dockerfile                                  # Docker configuration for the backend
+├── requirements.txt                            # Python dependencies
+├── src/                                        # Source code
+│   ├── server.py                               # Main server implementation
+│   ├── asr_got/                                # Core ASR-GoT implementation
+│   │   ├── core.py                             # Core functionality
+│   │   ├── stages/                             # Processing stages
 │   │   │   ├── stage_1_initialization.py
 │   │   │   ├── stage_2_decomposition.py
 │   │   │   ├── stage_3_hypothesis.py
@@ -26,9 +26,9 @@ asr-got-mcp/
 │   │   │   ├── stage_6_subgraph.py
 │   │   │   ├── stage_7_composition.py
 │   │   │   └── stage_8_reflection.py
-│   │   ├── utils/            # Utility functions
-│   │   └── models/           # Data models
-│   └── api/                  # API implementation
+│   │   ├── utils/                             # Utility functions
+│   │   └── models/                            # Data models
+│   └── api/                                   # API implementation
 │       ├── routes.py         # API routes
 │       └── schema.py         # API schemas
 ├── config/                   # Configuration files
