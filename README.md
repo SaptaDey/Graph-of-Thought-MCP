@@ -1,5 +1,16 @@
 # ASR Graph of Thoughts (GoT) Model Context Protocol (MCP) Server
 
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://saptadey.github.io/Adaptive-Graph-of-Thoughts-MCP-server/)
+[![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/license-Apache_2.0-green.svg)](LICENSE)
+[![Docker](https://img.shields.io/badge/docker-ready-brightgreen.svg)](Dockerfile)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.111.1-009688.svg)](https://fastapi.tiangolo.com)
+[![NetworkX](https://img.shields.io/badge/NetworkX-3.3-orange.svg)](https://networkx.org)
+[![Last Updated](https://img.shields.io/badge/last_updated-Jun_2025-lightgrey.svg)](CHANGELOG.md)
+[![smithery badge](https://smithery.ai/badge/@SaptaDey/graph-of-thought-mcp)](https://smithery.ai/server/@SaptaDey/graph-of-thought-mcp)
+[![Codacy Security Scan](https://github.com/SaptaDey/Adaptive-Graph-of-Thoughts-MCP-server/actions/workflows/codacy.yml/badge.svg)](https://github.com/SaptaDey/Adaptive-Graph-of-Thoughts-MCP-server/actions/workflows/codacy.yml)
+[![CodeQL Advanced](https://github.com/SaptaDey/Adaptive-Graph-of-Thoughts-MCP-server/actions/workflows/codeql.yml/badge.svg)](https://github.com/SaptaDey/Adaptive-Graph-of-Thoughts-MCP-server/actions/workflows/codeql.yml)
+[![Dependabot Updates](https://github.com/SaptaDey/Adaptive-Graph-of-Thoughts-MCP-server/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/SaptaDey/Adaptive-Graph-of-Thoughts-MCP-server/actions/workflows/dependabot/dependabot-updates)
 [![Verified on MseeP](https://mseep.ai/badge.svg)](https://mseep.ai/app/b56538c9-7a30-45b3-851c-447fe2eb24a6)
 
 The Advanced Scientific Research (ASR) Graph of Thoughts (GoT) MCP server is a highly efficient implementation of the Model Context Protocol (MCP) that allows for sophisticated reasoning workflows using graph-based representations.
