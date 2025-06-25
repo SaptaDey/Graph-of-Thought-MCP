@@ -1,11 +1,18 @@
 # Core dependencies for MCP server
 networkx>=3.0
 pydantic>=2.0
-numpy>=1.20.0
+numpy>=1.22.2
 # Optional dependencies for full functionality
-fastapi>=0.100.0
+fastapi>=0.109.1
 uvicorn>=0.20.0
 httpx>=0.25.0
 python-dotenv>=1.0.0
 matplotlib>=3.5.0
-requests>=2.0
+requests>=2.32.4
+anyio>=4.4.0 # not directly required, pinned by Snyk to avoid a vulnerability
+fonttools>=4.43.0 # not directly required, pinned by Snyk to avoid a vulnerability
+h11>=0.16.0 # not directly required, pinned by Snyk to avoid a vulnerability
+pillow>=10.3.0 # not directly required, pinned by Snyk to avoid a vulnerability
+starlette>=0.40.0 # not directly required, pinned by Snyk to avoid a vulnerability
+urllib3>=2.5.0 # not directly required, pinned by Snyk to avoid a vulnerability
+zipp>=3.19.1 # not directly required, pinned by Snyk to avoid a vulnerability
