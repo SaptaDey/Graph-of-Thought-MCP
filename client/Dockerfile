@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # This Dockerfile serves static assets for the client.
-FROM nginx:alpine
+FROM nginx:1.28.0-alpine3.21-slim
 
 # Copy static assets into nginx html directory
 COPY script.js styles.css /usr/share/nginx/html/
