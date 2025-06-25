@@ -1,5 +1,7 @@
 # ASR Graph of Thoughts (GoT) Model Context Protocol (MCP) Server
 
+[![Verified on MseeP](https://mseep.ai/badge.svg)](https://mseep.ai/app/b56538c9-7a30-45b3-851c-447fe2eb24a6)
+
 The Advanced Scientific Research (ASR) Graph of Thoughts (GoT) MCP server is a highly efficient implementation of the Model Context Protocol (MCP) that allows for sophisticated reasoning workflows using graph-based representations.
 
 ## Project Overview
