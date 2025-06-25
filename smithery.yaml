@@ -1,0 +1,10 @@
+runtime: "container"
+startCommand:
+  type: "http"
+  configSchema:
+    type: "object"
+    properties: {}
+  exampleConfig: {}
+build:
+  dockerfile: "Dockerfile"
+  dockerBuildPath: "."

@@ -199,7 +199,12 @@ async def read_root():
     """
     return {"message": "ASR-GoT MCP Server is running"}
 
+@app.get("/health")
+async def health_check():
+    """Simple health check endpoint used for Docker healthchecks"""
+    return {"status": "healthy"}
+
 if __name__ == "__main__":
     # Run the server
     port = int(os.getenv("PORT", 8000))
-    uvicorn.run("server:app", host="0.0.0.0", port=port, reload=True)
+    uvicorn.run("server:app", host="0.0.0.0", port=port)
